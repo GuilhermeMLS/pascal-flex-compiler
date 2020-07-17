@@ -99,6 +99,104 @@ end { simbolo = simb_end;
           return FECHA_PARENTESES;
  }
 
+
+\[  { simbolo = simb_abre_colchetes;  
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" abre_colchetes ");
+          return ABRE_COLCHETES;
+ }
+
+\]  { simbolo = simb_fecha_colchetes;  
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" fecha_colchetes ");
+          return FECHA_COLCHETES;
+ }
+
+\{  { simbolo = simb_abre_chaves;  
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" abre_chaves ");
+          return ABRE_CHAVES;
+ }
+
+\}  { simbolo = simb_fecha_chaves;  
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" fecha_chaves ");
+          return FECHA_CHAVES;
+ }
+
+label { simbolo = simb_label;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("label  ");
+          return LABEL;
+ }
+
+type { simbolo = simb_type;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("type  ");
+          return TYPE;
+ }
+
+array { simbolo = simb_array;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("array  ");
+          return ARRAY;
+ }
+
+var { simbolo = simb_var;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("var  ");
+          return VAR;
+ }
+
+procedure { simbolo = simb_procedure;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("procedure  ");
+          return PROCEDURE;
+ }
+
+function { simbolo = simb_function;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("function  ");
+          return FUNCTION;
+ }
+
+goto { simbolo = simb_goto;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("goto  ");
+          return GOTO;
+ }
+
+while { simbolo = simb_while;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("while  ");
+          return WHILE;
+ }
+ 
+do { simbolo = simb_do;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("do  ");
+          return DO;
+ }
+
+div { simbolo = simb_div;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("div  ");
+          return DIV;
+ }
+
+and { simbolo = simb_and;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("and  ");
+          return AND;
+ }
+
+not { simbolo = simb_not;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME("not  ");
+          return NOT;
+ }
+
+
 {ident} { simbolo = simb_identificador; 
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" ident  ");
