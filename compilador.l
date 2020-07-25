@@ -142,12 +142,6 @@ array { simbolo = simb_array;
           return ARRAY;
  }
 
-var { simbolo = simb_var;
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME("var  ");
-          return VAR;
- }
-
 procedure { simbolo = simb_procedure;
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME("procedure  ");
@@ -196,13 +190,11 @@ not { simbolo = simb_not;
           return NOT;
  }
 
-
 {ident} { simbolo = simb_identificador; 
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" ident  ");
           return IDENT;
         }
-
 
 %%
 

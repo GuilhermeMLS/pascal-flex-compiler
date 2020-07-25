@@ -1,6 +1,6 @@
 
-// Testar se funciona corretamente o empilhamento de parâmetros
-// passados por valor ou por referência.
+// Testar se funciona corretamente o empilhamento de parï¿½metros
+// passados por valor ou por referï¿½ncia.
 
 
 %{
@@ -14,9 +14,11 @@ int num_vars;
 
 %}
 
-%token PROGRAM ABRE_PARENTESES FECHA_PARENTESES 
-%token VIRGULA PONTO_E_VIRGULA DOIS_PONTOS PONTO
-%token T_BEGIN T_END VAR IDENT ATRIBUICAO
+%token INTEIRO PROGRAM ABRE_PARENTESES FECHA_PARENTESES 
+%token VIRGULA PONTO_E_VIRGULA DOIS_PONTOS PONTO NUMERO
+%token T_BEGIN T_END VAR IDENT ATRIBUICAO ABRE_COLCHETES
+%token FECHA_COLCHETES ABRE_CHAVES FECHA_CHAVES LABEL TYPE
+%token ARRAY PROCEDURE FUNCTION GOTO WHILE DO DIV AND NOT
 
 %%
 
@@ -65,8 +67,8 @@ tipo        : IDENT
 ;
 
 lista_id_var: lista_id_var VIRGULA IDENT 
-              { /* insere última vars na tabela de símbolos */ }
-            | IDENT { /* insere vars na tabela de símbolos */}
+              { /* insere ï¿½ltima vars na tabela de sï¿½mbolos */ }
+            | IDENT { /* insere vars na tabela de sï¿½mbolos */}
 ;
 
 lista_idents: lista_idents VIRGULA IDENT  
@@ -99,7 +101,7 @@ main (int argc, char** argv) {
 
 
 /* -------------------------------------------------------------------
- *  Inicia a Tabela de Símbolos
+ *  Inicia a Tabela de Sï¿½mbolos
  * ------------------------------------------------------------------- */
 
    yyin=fp;
