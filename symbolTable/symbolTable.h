@@ -6,9 +6,15 @@ enum variableTypes {
     floatingPoint = 3
 };
 
-enum variableCategories {
+enum symbolCategories {
     simpleVariable = 1,
-    formalParameter = 2
+    formalParameter = 2,
+    procedure = 3
+};
+
+enum passingMechanisms {
+    passByValue = 1,
+    passByReference = 2
 };
 
 typedef struct lexicalAddress {
@@ -16,11 +22,19 @@ typedef struct lexicalAddress {
     int offset;
 } lexicalAddressType;
 
+typedef struct formalParameter {
+    int type;
+    int passingMechanism;
+} formalParameterType;
+
 typedef struct symbol {
     char identifier[MAXIMUM_IDENTIFIER_SIZE];
     int type;
     lexicalAddressType *lexicalAddress;
     int category;
+    int passingMechanism;
+    int numberOfParameters;
+    formalParameterType* formalParametersArray;
 } symbolType;
 
 typedef struct symbolTable {
@@ -41,11 +55,14 @@ symbolTableType* createSymbolTable(unsigned capacity);
 symbolType* searchIntoSymbolTable(symbolTableType* symbolTable, char* identifier);
 void removeFromSymbolTable(symbolTableType* symbolTable, int numberOfEntriesToRemove);
 symbolType* createSymbol(
-    char* identifier,
-    int type,
-    int lexicalLevel,
-    int offset,
-    int category
+        char* identifier,
+        int type,
+        int lexicalLevel,
+        int offset,
+        int category,
+        int passingMechanism,
+        int numberOfParameters,
+        formalParameterType* formalParametersArray
 );
 
 // Utils API
@@ -54,3 +71,5 @@ void printSymbol(symbolType* symbol);
 int identifiersAreEqual(char* identifier1, char* identifier2);
 char* getSymbolTypeString(int type);
 char* getSymbolCategoryString(int type);
+char* getPassingMechanismString(int passingMechanism);
+void printFormalParameters(formalParameterType* formalParameters, int numberOfParameters);

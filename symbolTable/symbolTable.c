@@ -68,11 +68,14 @@ void removeFromSymbolTable(symbolTableType* symbolTable, int numberOfEntriesToRe
 }
 
 symbolType* createSymbol(
-    char* identifier,
-    int type,
-    int lexicalLevel,
-    int offset,
-    int category
+        char* identifier,
+        int type,
+        int lexicalLevel,
+        int offset,
+        int category,
+        int passingMechanism,
+        int numberOfParameters,
+        formalParameterType* formalParametersArray
 ) {
     symbolType* symbol = (symbolType*) malloc(sizeof(symbolType));
     strcpy(symbol->identifier, identifier);
@@ -82,17 +85,22 @@ symbolType* createSymbol(
     symbol->lexicalAddress->offset = offset;
     symbol->category = category;
 
+    if (category == formalParameter) {
+        symbol->passingMechanism = passingMechanism;
+    }
+
+    if (category == procedure) {
+        symbol->numberOfParameters = numberOfParameters;
+        symbol->formalParametersArray = formalParametersArray;
+    }
+
     return symbol;
 }
 
 void printSymbolTable(symbolTableType* symbolTable) {
     for (int i = symbolTable->top; i >= 0; i--) {
         symbolType* symbol = &(symbolTable->array[i]);
-        printf("---------\n");
-        printf("Identifier: %s \n", symbol->identifier);
-        printf("Type: %s \n", getSymbolTypeString(symbol->type));
-        printf("Lexical Address: [%d, %d] \n", symbol->lexicalAddress->lexicalLevel, symbol->lexicalAddress->offset);
-        printf("Category: %s \n", getSymbolCategoryString(symbol->category));
+        printSymbol(symbol);
     }
     printf("---------\n");
 }
@@ -100,10 +108,39 @@ void printSymbolTable(symbolTableType* symbolTable) {
 void printSymbol(symbolType* symbol) {
     printf("---------\n");
     printf("Identifier: %s \n", symbol->identifier);
-    printf("Type: %s \n", getSymbolTypeString(symbol->type));
+    if (symbol->category == formalParameter || symbol->category == simpleVariable) {
+        printf("Type: %s \n", getSymbolTypeString(symbol->type));
+    }
     printf("Lexical Address: [%d, %d] \n", symbol->lexicalAddress->lexicalLevel, symbol->lexicalAddress->offset);
     printf("Category: %s \n", getSymbolCategoryString(symbol->category));
-    printf("---------\n");
+    if (symbol->category == formalParameter) {
+        printf("Passing Mechanism: %s \n", getPassingMechanismString(symbol->passingMechanism));
+    }
+    if (symbol->category == procedure) {
+        printf("Number of parameters: %d \n", symbol->numberOfParameters);
+        printf("Formal Parameters: ");
+        printFormalParameters(symbol->formalParametersArray, symbol->numberOfParameters);
+    }
+}
+
+void printFormalParameters(formalParameterType* formalParameters, int numberOfParameters) {
+    printf("\n");
+    for (int i = 0; i < numberOfParameters; i++) {
+        formalParameterType parameter = formalParameters[i];
+        printf(
+                "    [Type = %s, Passing Mechanism = %s]\n",
+                getSymbolTypeString(parameter.type),
+                getPassingMechanismString(parameter.passingMechanism)
+        );
+    }
+}
+
+char* getPassingMechanismString(int passingMechanism) {
+    if (passingMechanism == passByValue) {
+        return "Pass by value";
+    } else {
+        return "Pass by reference";
+    }
 }
 
 int identifiersAreEqual(char* identifier1, char* identifier2) {
@@ -133,6 +170,8 @@ char* getSymbolCategoryString(int category) {
             return "Simple Variable";
         case formalParameter:
             return "Formal Parameter";
+        case procedure:
+            return "Procedure";
         default:
             return "Unknown category";
     }
