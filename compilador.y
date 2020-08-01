@@ -57,8 +57,13 @@ declara_vars: declara_vars declara_var
 
 declara_var : { } 
               lista_id_var DOIS_PONTOS 
-              tipo 
+              tipo
               { /* AMEM */
+              	int numberOfDigits = getNumberOfDigits(num_vars);
+              	char amemString[5 + numberOfDigits];
+              	sprintf(amemString, "AMEM %d", num_vars);
+              	geraCodigo (NULL, amemString);
+              	num_vars = 0;
               }
               PONTO_E_VIRGULA
 ;
@@ -66,9 +71,14 @@ declara_var : { }
 tipo        : IDENT
 ;
 
-lista_id_var: lista_id_var VIRGULA IDENT 
-              { /* insere �ltima vars na tabela de s�mbolos */ }
-            | IDENT { /* insere vars na tabela de s�mbolos */}
+lista_id_var: lista_id_var VIRGULA IDENT
+	      { /* insere última vars na tabela de símbolos */
+                  num_vars++;
+              }
+            | IDENT
+              { /* insere vars na tabela de símbolos */
+                  num_vars++;
+              }
 ;
 
 lista_idents: lista_idents VIRGULA IDENT  

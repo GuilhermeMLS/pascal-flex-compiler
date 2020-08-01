@@ -8,18 +8,19 @@
  *
  * -------------------------------------------------------------------
  *
- * Funções auxiliares ao compilador
+ * Funï¿½ï¿½es auxiliares ao compilador
  *
  * ------------------------------------------------------------------- */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include "compilador.h"
 
 
 /* -------------------------------------------------------------------
- *  variáveis globais
+ *  variï¿½veis globais
  * ------------------------------------------------------------------- */
 
 FILE* fp=NULL;
@@ -39,4 +40,18 @@ void geraCodigo (char* rot, char* comando) {
 int imprimeErro ( char* erro ) {
   fprintf (stderr, "Erro na linha %d - %s\n", nl, erro);
   exit(-1);
+}
+
+int getNumberOfDigits(int number) {
+    int result = 1;
+    if (number < 0) {
+        number = (number == INT_MIN)
+                ? INT_MAX
+                : - number;
+    }
+    while (number > 9) {
+        number /= 10;
+        result++;
+    }
+    return result;
 }
