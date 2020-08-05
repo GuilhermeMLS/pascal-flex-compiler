@@ -124,6 +124,60 @@ end { simbolo = simb_end;
           return FECHA_CHAVES;
  }
 
+\+  { simbolo = simb_mais;
+     strncpy (token, yytext, TAM_TOKEN);
+     IMPRIME(" mais");
+     return MAIS;
+}
+
+\-  { simbolo = simb_menos;
+     strncpy (token, yytext, TAM_TOKEN);
+     IMPRIME(" menos");
+     return MENOS;
+}
+
+\*  { simbolo = simb_vezes;
+     strncpy (token, yytext, TAM_TOKEN);
+     IMPRIME(" vezes");
+     return VEZES;
+}
+
+\<  { simbolo = simb_menor;
+        strncpy (token, yytext, TAM_TOKEN);
+        IMPRIME(" menor");
+        return MENOR;
+ }
+
+\>  { simbolo = simb_maior;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" maior");
+          return MAIOR;
+ }
+
+\<=  { simbolo = simb_menor_ou_igual;
+    strncpy (token, yytext, TAM_TOKEN);
+    IMPRIME(" menor_ou_igual");
+    return MENOR_OU_IGUAL;
+}
+
+\>=  { simbolo = simb_maior_ou_igual;
+    strncpy (token, yytext, TAM_TOKEN);
+    IMPRIME(" maior_ou_igual");
+    return MAIOR_OU_IGUAL;
+}
+
+\<>  { simbolo = simb_diferente;
+    strncpy (token, yytext, TAM_TOKEN);
+    IMPRIME(" diferente");
+    return DIFERENTE;
+}
+
+\=  { simbolo = simb_igual;
+    strncpy (token, yytext, TAM_TOKEN);
+    IMPRIME(" igual");
+    return IGUAL;
+}
+
 label { simbolo = simb_label;
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME("label  ");
@@ -184,16 +238,28 @@ and { simbolo = simb_and;
           return AND;
  }
 
+or { simbolo = simb_or;
+       strncpy (token, yytext, TAM_TOKEN);
+       IMPRIME("or  ");
+       return OR;
+}
+
 not { simbolo = simb_not;
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME("not  ");
           return NOT;
  }
 
-{ident} { simbolo = simb_identificador; 
+{ident} { simbolo = simb_identificador;
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" ident  ");
           return IDENT;
+        }
+
+{numero} { simbolo = simb_numero;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" numero  ");
+          return NUMERO;
         }
 
 %%

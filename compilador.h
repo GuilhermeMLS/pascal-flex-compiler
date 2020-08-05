@@ -41,7 +41,17 @@ typedef enum simbolos {
   simb_div,
   simb_and,
   simb_not,
-  simb_type
+  simb_type,
+  simb_igual,
+  simb_menos,
+  simb_mais,
+  simb_vezes,
+  simb_diferente,
+  simb_menor,
+  simb_maior,
+  simb_menor_ou_igual,
+  simb_maior_ou_igual,
+  simb_or
 } simbolos;
 
 

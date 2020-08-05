@@ -88,6 +88,12 @@
 		<Unit filename="/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/compiladorF.c">
 			<Option target="ProjetoBaseGuilherme_copy"/>
 		</Unit>
+		<Unit filename="/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/genericStack/genericStack.c">
+			<Option target="ProjetoBaseGuilherme_copy"/>
+		</Unit>
+		<Unit filename="/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/genericStack/genericStack.h">
+			<Option target="ProjetoBaseGuilherme_copy"/>
+		</Unit>
 		<Unit filename="/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/symbolTable/symbolTable.c">
 			<Option target="ProjetoBaseGuilherme_copy"/>
 		</Unit>

@@ -18,7 +18,9 @@ int num_vars;
 %token VIRGULA PONTO_E_VIRGULA DOIS_PONTOS PONTO NUMERO
 %token T_BEGIN T_END VAR IDENT ATRIBUICAO ABRE_COLCHETES
 %token FECHA_COLCHETES ABRE_CHAVES FECHA_CHAVES LABEL TYPE
-%token ARRAY PROCEDURE FUNCTION GOTO WHILE DO DIV AND NOT
+%token ARRAY PROCEDURE FUNCTION GOTO WHILE DO DIV AND NOT OR
+%token MENOR MAIOR DIFERENTE MAIOR_OU_IGUAL MENOR_OU_IGUAL
+%token IGUAL MENOS MAIS VEZES
 
 %%
 
@@ -86,10 +88,37 @@ lista_idents: lista_idents VIRGULA IDENT
 ;
 
 
-comando_composto: T_BEGIN comandos T_END 
+atribuicao: IDENT ATRIBUICAO expressao ;
+expressao: expressao_simples relacao_expressao_simples_ou_vazio;
+relacao_expressao_simples_ou_vazio: relacao_expressao_simples | ;
+relacao_expressao_simples: relacao expressao_simples;
 
-comandos:    
-;
+relacao: IGUAL | DIFERENTE | MENOR | MAIOR | MENOR_OU_IGUAL | MAIOR_OU_IGUAL;
+
+expressao_simples: mais_ou_menos_ou_vazio termo lista_sinal_e_termo_ou_vazio;
+lista_sinal_e_termo_ou_vazio: lista_sinal_e_termo | ;
+lista_sinal_e_termo: lista_sinal_e_termo sinal_lista_sinal_e_termo termo | sinal_lista_sinal_e_termo termo ;
+sinal_lista_sinal_e_termo: MAIS | MENOS | OR;
+mais_ou_menos_ou_vazio: mais_ou_menos | ;
+mais_ou_menos: MAIS | MENOS ;
+
+termo: fator lista_sinal_e_fator_ou_vazio;
+lista_sinal_e_fator_ou_vazio: lista_sinal_e_fator | ;
+lista_sinal_e_fator: lista_sinal_e_fator sinal_lista_sinal_fator fator | sinal_lista_sinal_fator fator ;
+sinal_lista_sinal_fator: VEZES | DIV | AND;
+
+fator: NOT fator | variavel | NUMERO | ABRE_PARENTESES expressao FECHA_PARENTESES ;
+
+variavel: IDENT ;
+
+
+
+
+comando_composto: T_BEGIN comandos T_END;
+
+comandos: lista_de_atribuicoes;
+
+lista_de_atribuicoes: lista_de_atribuicoes PONTO_E_VIRGULA atribuicao | atribuicao ;
 
 
 %%

@@ -10,4 +10,6 @@ add_executable(ProjetoBaseGuilherme_copy
         symbolTable/symbolTable.c
         symbolTable/symbolTable.h
         compilador.h
-        compiladorF.c)
+        compiladorF.c
+        genericStack/genericStack.h
+        genericStack/genericStack.c)
