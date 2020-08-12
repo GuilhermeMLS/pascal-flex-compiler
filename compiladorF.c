@@ -17,6 +17,7 @@
 #include <string.h>
 #include <limits.h>
 #include "compilador.h"
+#include "symbolTable/symbolTable.h"
 
 
 /* -------------------------------------------------------------------
@@ -46,12 +47,25 @@ int getNumberOfDigits(int number) {
     int result = 1;
     if (number < 0) {
         number = (number == INT_MIN)
-                ? INT_MAX
-                : - number;
+            ? INT_MAX
+            : - number;
     }
     while (number > 9) {
         number /= 10;
         result++;
     }
     return result;
+}
+
+int getTypeBasedOnToken(char* typeToken) {
+    if (strcmp(typeToken, "integer") == 0) {
+        return integer;
+    }
+    if (strcmp(typeToken, "char") == 0) {
+        return character;
+    }
+    if (strcmp(typeToken, "real") == 0) {
+        return floatingPoint;
+    }
+    return 0;
 }

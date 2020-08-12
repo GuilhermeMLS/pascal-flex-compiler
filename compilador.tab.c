@@ -166,6 +166,7 @@
 int num_vars;
 symbolTableType* compilerSymbolTable;
 int currentLexicalLevel = 0;
+int offset = -1;
 
 
 
@@ -200,7 +201,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 204 "compilador.tab.c"
+#line 205 "compilador.tab.c"
 
 #ifdef short
 # undef short
@@ -506,13 +507,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    32,    32,    32,    40,    39,    49,    53,    53,    54,
-      57,    58,    61,    64,    61,    77,    80,    85,    98,    99,
-     103,   104,   105,   105,   106,   108,   108,   108,   108,   108,
-     108,   110,   111,   111,   112,   112,   113,   113,   113,   114,
-     114,   115,   115,   117,   118,   118,   119,   119,   120,   120,
-     120,   122,   122,   122,   122,   124,   129,   131,   133,   133,
-     133
+       0,    33,    33,    33,    41,    40,    50,    54,    54,    55,
+      58,    59,    62,    63,    62,    78,    80,    91,   104,   105,
+     109,   110,   111,   111,   112,   114,   114,   114,   114,   114,
+     114,   116,   117,   117,   118,   118,   119,   119,   119,   120,
+     120,   121,   121,   123,   124,   124,   125,   125,   126,   126,
+     126,   128,   128,   128,   128,   130,   135,   137,   139,   139,
+     139
 };
 #endif
 
@@ -1480,12 +1481,12 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 32 "compilador.y"
+#line 33 "compilador.y"
     { geraCodigo (NULL, "INPP"); ;}
     break;
 
   case 3:
-#line 33 "compilador.y"
+#line 34 "compilador.y"
     {
              geraCodigo (NULL, "PARA");
              printSymbolTable(compilerSymbolTable);
@@ -1493,61 +1494,74 @@ yyreduce:
     break;
 
   case 4:
-#line 40 "compilador.y"
+#line 41 "compilador.y"
     { 
               ;}
     break;
 
   case 7:
-#line 53 "compilador.y"
+#line 54 "compilador.y"
     { ;}
     break;
 
   case 12:
-#line 61 "compilador.y"
+#line 62 "compilador.y"
     { ;}
     break;
 
   case 13:
-#line 64 "compilador.y"
-    { /* AMEM */
-              	int numberOfDigits = getNumberOfDigits(num_vars);
-              	char amemString[5 + numberOfDigits];
+#line 63 "compilador.y"
+    {
+		/* AMEM */
+		int numberOfDigits = getNumberOfDigits(num_vars);
+		char amemString[5 + numberOfDigits];
               	sprintf(amemString, "AMEM %d", num_vars);
               	geraCodigo (NULL, amemString);
-              	num_vars = 0;
 
-              	// Here we should update the Symbol Table with the correct variable type
 
-              ;}
+		// Here we should update the last num_vars symbols with the correct type
+		int type = getTypeBasedOnToken(token);
+		updateLastSymbolsTypes(compilerSymbolTable, num_vars, type);
+
+		num_vars = 0;
+	;}
     break;
 
   case 16:
-#line 81 "compilador.y"
-    { /* insere última vars na tabela de símbolos */
-                  num_vars++;
+#line 80 "compilador.y"
+    {
+		/* Insert the last variable of the list into the Symbol Table */
+		num_vars++;
+		offset++;
 
-              ;}
+		int type = 0; // temporary, will be updated later
+		int lexicalLevel = currentLexicalLevel;
+		int category = simpleVariable;
+
+		symbolType* newVariable = createSymbol(token, type, lexicalLevel, offset, category, 0, 0, 0);
+		pushToSymbolTable(compilerSymbolTable, newVariable);
+	;}
     break;
 
   case 17:
-#line 85 "compilador.y"
+#line 91 "compilador.y"
     {
             	/* insere vars na tabela de símbolos */
-
 		num_vars++;
-                int type = 0; // temporary, update later
+		offset++;
+
+                int type = 0; // temporary, will be updated later
 		int lexicalLevel = currentLexicalLevel;
 		int category = simpleVariable;
-		int offset = num_vars - 1;
+
 		symbolType* newVariable = createSymbol(token, type, lexicalLevel, offset, category, 0, 0, 0);
 		pushToSymbolTable(compilerSymbolTable, newVariable);
-            ;}
+	;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1551 "compilador.tab.c"
+#line 1565 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1761,7 +1775,7 @@ yyreturn:
 }
 
 
-#line 136 "compilador.y"
+#line 142 "compilador.y"
 
 
 main (int argc, char** argv) {

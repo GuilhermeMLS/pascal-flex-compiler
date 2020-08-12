@@ -16,6 +16,7 @@
 int num_vars;
 symbolTableType* compilerSymbolTable;
 int currentLexicalLevel = 0;
+int offset = -1;
 
 %}
 
@@ -58,42 +59,47 @@ declara_vars: declara_vars declara_var
             | declara_var 
 ;
 
-declara_var : { } 
-              lista_id_var DOIS_PONTOS 
-              tipo
-              { /* AMEM */
-              	int numberOfDigits = getNumberOfDigits(num_vars);
-              	char amemString[5 + numberOfDigits];
+declara_var : { }  lista_id_var DOIS_PONTOS
+	tipo {
+		/* AMEM */
+		int numberOfDigits = getNumberOfDigits(num_vars);
+		char amemString[5 + numberOfDigits];
               	sprintf(amemString, "AMEM %d", num_vars);
               	geraCodigo (NULL, amemString);
-              	num_vars = 0;
 
-              // Here we should update the Symbol Table with the correct variable type
 
-              }
-              PONTO_E_VIRGULA
-;
+		// Here we should update the last num_vars symbols with the correct type
+		int type = getTypeBasedOnToken(token);
+		updateLastSymbolsTypes(compilerSymbolTable, num_vars, type);
 
-tipo        : IDENT
-;
+		num_vars = 0;
+	} PONTO_E_VIRGULA ;
 
-lista_id_var: lista_id_var VIRGULA IDENT
-	      { /* insere última vars na tabela de símbolos */
-                  num_vars++;
+tipo: IDENT;
 
-              }
-            | IDENT {
-            	/* insere vars na tabela de símbolos */
-
+lista_id_var: lista_id_var VIRGULA IDENT {
+		/* Insert the last variable of the list into the Symbol Table */
 		num_vars++;
-                int type = 0; // temporary, update later
+		offset++;
+
+		int type = 0; // temporary, will be updated later
 		int lexicalLevel = currentLexicalLevel;
 		int category = simpleVariable;
-		int offset = num_vars - 1;
+
 		symbolType* newVariable = createSymbol(token, type, lexicalLevel, offset, category, 0, 0, 0);
 		pushToSymbolTable(compilerSymbolTable, newVariable);
-            }
-;
+	} | IDENT {
+            	/* insere vars na tabela de símbolos */
+		num_vars++;
+		offset++;
+
+                int type = 0; // temporary, will be updated later
+		int lexicalLevel = currentLexicalLevel;
+		int category = simpleVariable;
+
+		symbolType* newVariable = createSymbol(token, type, lexicalLevel, offset, category, 0, 0, 0);
+		pushToSymbolTable(compilerSymbolTable, newVariable);
+	};
 
 lista_idents: lista_idents VIRGULA IDENT  
             | IDENT

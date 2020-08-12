@@ -180,3 +180,25 @@ char* getSymbolCategoryString(int category) {
             return "Unknown category";
     }
 }
+
+void updateSymbolType(symbolTableType* symbolTable, char* identifier, int newType) {
+    if (symbolTableIsEmpty(symbolTable)) {
+        return;
+    }
+    for (int i = symbolTable->top; i >= 0; i--) {
+        symbolType* symbol = &(symbolTable->array[i]);
+        if (identifiersAreEqual(symbol->identifier, identifier)) {
+            symbol->type = newType;
+        }
+    }
+}
+
+void updateLastSymbolsTypes(symbolTableType* symbolTable, int numberOfLastSymbols, int newType) {
+    if (symbolTableIsEmpty(symbolTable)) {
+        return;
+    }
+    for (int i = symbolTable->top; i > (symbolTable->top - numberOfLastSymbols); i--) {
+        symbolType* symbol = &(symbolTable->array[i]);
+        symbol->type = newType;
+    }
+}

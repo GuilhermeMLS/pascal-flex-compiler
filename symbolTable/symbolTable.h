@@ -73,3 +73,5 @@ char* getSymbolTypeString(int type);
 char* getSymbolCategoryString(int type);
 char* getPassingMechanismString(int passingMechanism);
 void printFormalParameters(formalParameterType* formalParameters, int numberOfParameters);
+void updateSymbolType(symbolTableType* symbolTable, char* identifier, int newType);
+void updateLastSymbolsTypes(symbolTableType* symbolTable, int numberOfLastSymbols, int newType);
