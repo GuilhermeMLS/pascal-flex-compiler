@@ -17,6 +17,7 @@ int num_vars;
 symbolTableType* compilerSymbolTable;
 int currentLexicalLevel = 0;
 int offset = -1;
+symbolType* currentSymbol;
 
 %}
 
@@ -36,16 +37,7 @@ programa: { geraCodigo (NULL, "INPP"); }
              printSymbolTable(compilerSymbolTable);
 	};
 
-bloco       : 
-              parte_declara_vars
-              { 
-              }
-
-              comando_composto 
-              ;
-
-
-
+bloco: parte_declara_vars { } comando_composto ;
 
 parte_declara_vars:  var 
 ;
@@ -106,7 +98,22 @@ lista_idents: lista_idents VIRGULA IDENT
 ;
 
 
-atribuicao: IDENT ATRIBUICAO expressao ;
+atribuicao: IDENT {
+		currentSymbol = searchIntoSymbolTable(compilerSymbolTable, token);
+	} atribui_variavel;
+
+atribui_variavel: ATRIBUICAO expressao {
+		int lexicalLevelNumberOfDigits = getNumberOfDigits(currentSymbol->lexicalAddress->lexicalLevel);
+		int offsetNumberOfDigits = getNumberOfDigits(currentSymbol->lexicalAddress->offset);
+		char armzString[6 + lexicalLevelNumberOfDigits + offsetNumberOfDigits];
+		sprintf(
+			armzString, "ARMZ %d,%d",
+			currentSymbol->lexicalAddress->lexicalLevel,
+			currentSymbol->lexicalAddress->offset
+		);
+		geraCodigo(NULL, armzString);
+	};
+
 expressao: expressao_simples relacao_expressao_simples_ou_vazio;
 relacao_expressao_simples_ou_vazio: relacao_expressao_simples | ;
 relacao_expressao_simples: relacao expressao_simples;
@@ -125,7 +132,13 @@ lista_sinal_e_fator_ou_vazio: lista_sinal_e_fator | ;
 lista_sinal_e_fator: lista_sinal_e_fator sinal_lista_sinal_fator fator | sinal_lista_sinal_fator fator ;
 sinal_lista_sinal_fator: VEZES | DIV | AND;
 
-fator: NOT fator | variavel | NUMERO | ABRE_PARENTESES expressao FECHA_PARENTESES ;
+fator: NOT fator | variavel |
+ 	NUMERO {
+ 		int numberOfDigits = getNumberOfDigits(atoi(token));
+ 		char crctString[5 + numberOfDigits];
+ 		sprintf(crctString, "CRCT %s", token);
+ 		geraCodigo(NULL, crctString);
+ 	} | ABRE_PARENTESES expressao FECHA_PARENTESES ;
 
 variavel: IDENT ;
 
@@ -136,7 +149,7 @@ comando_composto: T_BEGIN comandos T_END ;
 
 comandos: lista_de_atribuicoes;
 
-lista_de_atribuicoes: lista_de_atribuicoes PONTO_E_VIRGULA atribuicao | atribuicao | ;
+lista_de_atribuicoes: lista_de_atribuicoes atribuicao PONTO_E_VIRGULA | ;
 
 
 %%
