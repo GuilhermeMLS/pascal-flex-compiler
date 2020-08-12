@@ -110,6 +110,7 @@ Grammar
 
    57 lista_de_atribuicoes: lista_de_atribuicoes PONTO_E_VIRGULA atribuicao
    58                     | atribuicao
+   59                     | /* empty */
 
 
 Terminals, with rules where they appear
@@ -228,7 +229,7 @@ comando_composto (74)
 comandos (75)
     on left: 56, on right: 55
 lista_de_atribuicoes (76)
-    on left: 57 58, on right: 56 57
+    on left: 57 58 59, on right: 56 57
 
 
 state 0
@@ -397,6 +398,8 @@ state 20
    55 comando_composto: T_BEGIN . comandos T_END
 
     IDENT  shift, and go to state 25
+
+    $default  reduce using rule 59 (lista_de_atribuicoes)
 
     atribuicao            go to state 26
     comandos              go to state 27

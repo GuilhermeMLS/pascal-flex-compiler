@@ -159,8 +159,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "compilador.h"
+#include "symbolTable/symbolTable.h"
+
+#define SYMBOL_TABLE_CAPACITY 100
 
 int num_vars;
+symbolTableType* compilerSymbolTable;
+int currentLexicalLevel = 0;
 
 
 
@@ -195,7 +200,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 199 "compilador.tab.c"
+#line 204 "compilador.tab.c"
 
 #ifdef short
 # undef short
@@ -417,7 +422,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  35
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  59
+#define YYNRULES  60
 /* YYNRULES -- Number of states.  */
 #define YYNSTATES  87
 
@@ -473,7 +478,8 @@ static const yytype_uint8 yyprhs[] =
       55,    59,    62,    64,    65,    68,    70,    72,    74,    76,
       78,    80,    84,    86,    87,    91,    94,    96,    98,   100,
      102,   103,   105,   107,   110,   112,   113,   117,   120,   122,
-     124,   126,   129,   131,   133,   137,   139,   143,   145,   149
+     124,   126,   129,   131,   133,   137,   139,   143,   145,   149,
+     151
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -494,18 +500,19 @@ static const yytype_int8 yyrhs[] =
       41,    -1,    29,    -1,    30,    -1,    31,    72,    -1,    73,
       -1,    11,    -1,     5,    58,     6,    -1,    15,    -1,    12,
       75,    13,    -1,    76,    -1,    76,     8,    57,    -1,    57,
-      -1
+      -1,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    27,    27,    27,    39,    38,    48,    52,    52,    53,
-      56,    57,    60,    63,    60,    73,    76,    80,    86,    87,
-      91,    92,    93,    93,    94,    96,    96,    96,    96,    96,
-      96,    98,    99,    99,   100,   100,   101,   101,   101,   102,
-     102,   103,   103,   105,   106,   106,   107,   107,   108,   108,
-     108,   110,   110,   110,   110,   112,   117,   119,   121,   121
+       0,    32,    32,    32,    40,    39,    49,    53,    53,    54,
+      57,    58,    61,    64,    61,    77,    80,    85,    98,    99,
+     103,   104,   105,   105,   106,   108,   108,   108,   108,   108,
+     108,   110,   111,   111,   112,   112,   113,   113,   113,   114,
+     114,   115,   115,   117,   118,   118,   119,   119,   120,   120,
+     120,   122,   122,   122,   122,   124,   129,   131,   133,   133,
+     133
 };
 #endif
 
@@ -555,7 +562,8 @@ static const yytype_uint8 yyr1[] =
       57,    58,    59,    59,    60,    61,    61,    61,    61,    61,
       61,    62,    63,    63,    64,    64,    65,    65,    65,    66,
       66,    67,    67,    68,    69,    69,    70,    70,    71,    71,
-      71,    72,    72,    72,    72,    73,    74,    75,    76,    76
+      71,    72,    72,    72,    72,    73,    74,    75,    76,    76,
+      76
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -566,7 +574,8 @@ static const yytype_uint8 yyr2[] =
        3,     2,     1,     0,     2,     1,     1,     1,     1,     1,
        1,     3,     1,     0,     3,     2,     1,     1,     1,     1,
        0,     1,     1,     2,     1,     0,     3,     2,     1,     1,
-       1,     2,     1,     1,     3,     1,     3,     1,     3,     1
+       1,     2,     1,     1,     3,     1,     3,     1,     3,     1,
+       0
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -576,7 +585,7 @@ static const yytype_uint8 yydefact[] =
 {
        2,     0,     0,     1,     0,     0,     0,    19,     0,     0,
        0,     7,    18,     0,     4,     6,     0,     3,     0,    12,
-       0,     5,     8,    11,     0,     0,    59,     0,    57,    10,
+      60,     5,     8,    11,     0,     0,    59,     0,    57,    10,
       17,     0,    40,    56,     0,     0,     0,    42,    41,    20,
       23,     0,    39,    58,    16,    15,    13,    27,    28,    26,
       30,    29,    25,    21,    22,    40,    40,    53,    55,     0,
@@ -1471,63 +1480,74 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 27 "compilador.y"
-    { 
-             geraCodigo (NULL, "INPP"); 
-             ;}
+#line 32 "compilador.y"
+    { geraCodigo (NULL, "INPP"); ;}
     break;
 
   case 3:
-#line 32 "compilador.y"
+#line 33 "compilador.y"
     {
-             geraCodigo (NULL, "PARA"); 
-             ;}
+             geraCodigo (NULL, "PARA");
+             printSymbolTable(compilerSymbolTable);
+	;}
     break;
 
   case 4:
-#line 39 "compilador.y"
+#line 40 "compilador.y"
     { 
               ;}
     break;
 
   case 7:
-#line 52 "compilador.y"
+#line 53 "compilador.y"
     { ;}
     break;
 
   case 12:
-#line 60 "compilador.y"
+#line 61 "compilador.y"
     { ;}
     break;
 
   case 13:
-#line 63 "compilador.y"
+#line 64 "compilador.y"
     { /* AMEM */
               	int numberOfDigits = getNumberOfDigits(num_vars);
               	char amemString[5 + numberOfDigits];
               	sprintf(amemString, "AMEM %d", num_vars);
               	geraCodigo (NULL, amemString);
               	num_vars = 0;
+
+              	// Here we should update the Symbol Table with the correct variable type
+
               ;}
     break;
 
   case 16:
-#line 77 "compilador.y"
+#line 81 "compilador.y"
     { /* insere última vars na tabela de símbolos */
                   num_vars++;
+
               ;}
     break;
 
   case 17:
-#line 81 "compilador.y"
-    { /* insere vars na tabela de símbolos */
-                  num_vars++;
-              ;}
+#line 85 "compilador.y"
+    {
+            	/* insere vars na tabela de símbolos */
+
+		num_vars++;
+                int type = 0; // temporary, update later
+		int lexicalLevel = currentLexicalLevel;
+		int category = simpleVariable;
+		int offset = num_vars - 1;
+		symbolType* newVariable = createSymbol(token, type, lexicalLevel, offset, category, 0, 0, 0);
+		pushToSymbolTable(compilerSymbolTable, newVariable);
+            ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1531 "compilador.tab.c"
+#line 1551 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1741,7 +1761,7 @@ yyreturn:
 }
 
 
-#line 124 "compilador.y"
+#line 136 "compilador.y"
 
 
 main (int argc, char** argv) {
@@ -1763,7 +1783,7 @@ main (int argc, char** argv) {
 /* -------------------------------------------------------------------
  *  Inicia a Tabela de S�mbolos
  * ------------------------------------------------------------------- */
-
+   compilerSymbolTable = createSymbolTable(SYMBOL_TABLE_CAPACITY);
    yyin=fp;
    yyparse();
 

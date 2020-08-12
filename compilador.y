@@ -9,8 +9,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "compilador.h"
+#include "symbolTable/symbolTable.h"
+
+#define SYMBOL_TABLE_CAPACITY 100
 
 int num_vars;
+symbolTableType* compilerSymbolTable;
+int currentLexicalLevel = 0;
 
 %}
 
@@ -24,15 +29,11 @@ int num_vars;
 
 %%
 
-programa    :{ 
-             geraCodigo (NULL, "INPP"); 
-             }
-             PROGRAM IDENT 
-             ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
-             bloco PONTO {
-             geraCodigo (NULL, "PARA"); 
-             }
-;
+programa: { geraCodigo (NULL, "INPP"); }
+	PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO {
+             geraCodigo (NULL, "PARA");
+             printSymbolTable(compilerSymbolTable);
+	};
 
 bloco       : 
               parte_declara_vars
@@ -66,6 +67,9 @@ declara_var : { }
               	sprintf(amemString, "AMEM %d", num_vars);
               	geraCodigo (NULL, amemString);
               	num_vars = 0;
+
+              // Here we should update the Symbol Table with the correct variable type
+
               }
               PONTO_E_VIRGULA
 ;
@@ -76,11 +80,19 @@ tipo        : IDENT
 lista_id_var: lista_id_var VIRGULA IDENT
 	      { /* insere última vars na tabela de símbolos */
                   num_vars++;
+
               }
-            | IDENT
-              { /* insere vars na tabela de símbolos */
-                  num_vars++;
-              }
+            | IDENT {
+            	/* insere vars na tabela de símbolos */
+
+		num_vars++;
+                int type = 0; // temporary, update later
+		int lexicalLevel = currentLexicalLevel;
+		int category = simpleVariable;
+		int offset = num_vars - 1;
+		symbolType* newVariable = createSymbol(token, type, lexicalLevel, offset, category, 0, 0, 0);
+		pushToSymbolTable(compilerSymbolTable, newVariable);
+            }
 ;
 
 lista_idents: lista_idents VIRGULA IDENT  
@@ -114,11 +126,11 @@ variavel: IDENT ;
 
 
 
-comando_composto: T_BEGIN comandos T_END;
+comando_composto: T_BEGIN comandos T_END ;
 
 comandos: lista_de_atribuicoes;
 
-lista_de_atribuicoes: lista_de_atribuicoes PONTO_E_VIRGULA atribuicao | atribuicao ;
+lista_de_atribuicoes: lista_de_atribuicoes PONTO_E_VIRGULA atribuicao | atribuicao | ;
 
 
 %%
@@ -142,7 +154,7 @@ main (int argc, char** argv) {
 /* -------------------------------------------------------------------
  *  Inicia a Tabela de S�mbolos
  * ------------------------------------------------------------------- */
-
+   compilerSymbolTable = createSymbolTable(SYMBOL_TABLE_CAPACITY);
    yyin=fp;
    yyparse();
 

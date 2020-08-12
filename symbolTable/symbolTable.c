@@ -3,6 +3,10 @@
 #include <string.h>
 #include "symbolTable.h"
 
+#define RED   "\x1B[31m"
+#define GRN   "\x1B[32m"
+#define RESET "\x1B[0m"
+
 symbolTableType* createSymbolTable(unsigned capacity) {
     symbolTableType* symbolTable = (symbolTableType*) malloc(sizeof(symbolTableType));
     symbolTable->capacity = capacity;
@@ -24,7 +28,7 @@ void pushToSymbolTable(symbolTableType* symbolTable, symbolType* symbol) {
         return;
     }
     symbolTable->array[++symbolTable->top] = *symbol;
-    printf("\"%s\" pushed to Symbol Table.\n", symbol->identifier);
+    printf(GRN "[Symbol Table Message] \"%s\" pushed to Symbol Table.\n" RESET, symbol->identifier);
 }
 
 symbolType* popFromSymbolTable(symbolTableType* symbolTable) {

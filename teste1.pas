@@ -1,5 +1,5 @@
-program exemplo75 (input, output);
-var m,n :  integer;
+program teste1 (input, output);
+  var a :  integer;
 begin    
 end.
 
