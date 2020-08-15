@@ -150,32 +150,32 @@ compiladorF.c.s:
 	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/compiladorF.c.s
 .PHONY : compiladorF.c.s
 
-genericStack/genericStack.o: genericStack/genericStack.c.o
+stringStack/stringStack.o: stringStack/stringStack.c.o
 
-.PHONY : genericStack/genericStack.o
+.PHONY : stringStack/stringStack.o
 
 # target to build an object file
-genericStack/genericStack.c.o:
-	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/genericStack/genericStack.c.o
-.PHONY : genericStack/genericStack.c.o
+stringStack/stringStack.c.o:
+	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/stringStack/stringStack.c.o
+.PHONY : stringStack/stringStack.c.o
 
-genericStack/genericStack.i: genericStack/genericStack.c.i
+stringStack/stringStack.i: stringStack/stringStack.c.i
 
-.PHONY : genericStack/genericStack.i
+.PHONY : stringStack/stringStack.i
 
 # target to preprocess a source file
-genericStack/genericStack.c.i:
-	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/genericStack/genericStack.c.i
-.PHONY : genericStack/genericStack.c.i
+stringStack/stringStack.c.i:
+	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/stringStack/stringStack.c.i
+.PHONY : stringStack/stringStack.c.i
 
-genericStack/genericStack.s: genericStack/genericStack.c.s
+stringStack/stringStack.s: stringStack/stringStack.c.s
 
-.PHONY : genericStack/genericStack.s
+.PHONY : stringStack/stringStack.s
 
 # target to generate assembly for a file
-genericStack/genericStack.c.s:
-	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/genericStack/genericStack.c.s
-.PHONY : genericStack/genericStack.c.s
+stringStack/stringStack.c.s:
+	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/stringStack/stringStack.c.s
+.PHONY : stringStack/stringStack.c.s
 
 symbolTable/symbolTable.o: symbolTable/symbolTable.c.o
 
@@ -216,9 +216,9 @@ help:
 	@echo "... compiladorF.o"
 	@echo "... compiladorF.i"
 	@echo "... compiladorF.s"
-	@echo "... genericStack/genericStack.o"
-	@echo "... genericStack/genericStack.i"
-	@echo "... genericStack/genericStack.s"
+	@echo "... stringStack/stringStack.o"
+	@echo "... stringStack/stringStack.i"
+	@echo "... stringStack/stringStack.s"
 	@echo "... symbolTable/symbolTable.o"
 	@echo "... symbolTable/symbolTable.i"
 	@echo "... symbolTable/symbolTable.s"

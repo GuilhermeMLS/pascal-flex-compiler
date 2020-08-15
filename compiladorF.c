@@ -18,6 +18,7 @@
 #include <limits.h>
 #include "compilador.h"
 #include "symbolTable/symbolTable.h"
+#include "stringStack/stringStack.h"
 
 
 /* -------------------------------------------------------------------
@@ -68,4 +69,20 @@ int getTypeBasedOnToken(char* typeToken) {
         return floatingPoint;
     }
     return 0;
+}
+
+char* getOperatorInstruction(char *operator) {
+    if (strcmp(operator, "+") == 0) {
+        return "SOMA";
+    }
+    if (strcmp(operator, "*") == 0) {
+        return "MULT";
+    }
+    if (strcmp(operator, "/") == 0) {
+        return "DIVI";
+    }
+    if (strcmp(operator, "-") == 0) {
+        return "SUBT";
+    }
+    return NULL;
 }

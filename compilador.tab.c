@@ -160,14 +160,19 @@
 #include <string.h>
 #include "compilador.h"
 #include "symbolTable/symbolTable.h"
+#include "stringStack/stringStack.h"
 
 #define SYMBOL_TABLE_CAPACITY 100
+#define OPERATORS_STACK_CAPACITY 100
 
 int num_vars;
 symbolTableType* compilerSymbolTable;
 int currentLexicalLevel = 0;
 int offset = -1;
 symbolType* currentSymbol;
+stringStackType* operatorsStack;
+
+char* getOperatorInstruction(char *operator);
 
 
 
@@ -202,7 +207,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 206 "compilador.tab.c"
+#line 211 "compilador.tab.c"
 
 #ifdef short
 # undef short
@@ -508,13 +513,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    34,    34,    34,    40,    40,    42,    46,    46,    47,
-      50,    51,    54,    55,    54,    70,    72,    83,    96,    97,
-     101,   101,   105,   117,   118,   118,   119,   121,   121,   121,
-     121,   121,   121,   123,   124,   124,   125,   125,   126,   126,
-     126,   127,   127,   128,   128,   130,   131,   131,   132,   132,
-     133,   133,   133,   135,   135,   136,   141,   143,   148,   150,
-     152,   152
+       0,    39,    39,    39,    45,    45,    47,    51,    51,    52,
+      55,    56,    59,    60,    59,    75,    77,    88,   101,   102,
+     106,   106,   110,   122,   123,   123,   124,   126,   126,   126,
+     126,   126,   126,   128,   129,   129,   130,   137,   145,   148,
+     148,   149,   149,   150,   150,   152,   153,   153,   154,   154,
+     155,   155,   155,   157,   157,   170,   175,   177,   182,   184,
+     186,   186
 };
 #endif
 
@@ -1482,12 +1487,12 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 34 "compilador.y"
+#line 39 "compilador.y"
     { geraCodigo (NULL, "INPP"); ;}
     break;
 
   case 3:
-#line 35 "compilador.y"
+#line 40 "compilador.y"
     {
              geraCodigo (NULL, "PARA");
              printSymbolTable(compilerSymbolTable);
@@ -1495,22 +1500,22 @@ yyreduce:
     break;
 
   case 4:
-#line 40 "compilador.y"
+#line 45 "compilador.y"
     { ;}
     break;
 
   case 7:
-#line 46 "compilador.y"
+#line 51 "compilador.y"
     { ;}
     break;
 
   case 12:
-#line 54 "compilador.y"
+#line 59 "compilador.y"
     { ;}
     break;
 
   case 13:
-#line 55 "compilador.y"
+#line 60 "compilador.y"
     {
 		/* AMEM */
 		int numberOfDigits = getNumberOfDigits(num_vars);
@@ -1528,7 +1533,7 @@ yyreduce:
     break;
 
   case 16:
-#line 72 "compilador.y"
+#line 77 "compilador.y"
     {
 		/* Insert the last variable of the list into the Symbol Table */
 		num_vars++;
@@ -1544,7 +1549,7 @@ yyreduce:
     break;
 
   case 17:
-#line 83 "compilador.y"
+#line 88 "compilador.y"
     {
             	/* insere vars na tabela de símbolos */
 		num_vars++;
@@ -1560,14 +1565,14 @@ yyreduce:
     break;
 
   case 20:
-#line 101 "compilador.y"
+#line 106 "compilador.y"
     {
 		currentSymbol = searchIntoSymbolTable(compilerSymbolTable, token);
 	;}
     break;
 
   case 22:
-#line 105 "compilador.y"
+#line 110 "compilador.y"
     {
 		int lexicalLevelNumberOfDigits = getNumberOfDigits(currentSymbol->lexicalAddress->lexicalLevel);
 		int offsetNumberOfDigits = getNumberOfDigits(currentSymbol->lexicalAddress->offset);
@@ -1581,8 +1586,57 @@ yyreduce:
 	;}
     break;
 
+  case 36:
+#line 130 "compilador.y"
+    {
+		// desempilha a operacao
+		char* operator = popFromStringStack(operatorsStack);
+
+		char* instruction = getOperatorInstruction(operator);
+
+		geraCodigo(NULL, instruction);
+	;}
+    break;
+
+  case 37:
+#line 137 "compilador.y"
+    {
+		// desempilha a operacao
+		char* operator = popFromStringStack(operatorsStack);
+
+		char* instruction = getOperatorInstruction(operator);
+
+		geraCodigo(NULL, instruction);
+	;}
+    break;
+
+  case 38:
+#line 145 "compilador.y"
+    {
+		// empilha a soma
+		pushToStringStack(operatorsStack, token);
+	;}
+    break;
+
+  case 54:
+#line 157 "compilador.y"
+    {
+		symbolType* variable = searchIntoSymbolTable(compilerSymbolTable, token);
+		int lexicalLevelNumberOfDigits = getNumberOfDigits(variable->lexicalAddress->lexicalLevel);
+		int offsetNumberOfDigits = getNumberOfDigits(variable->lexicalAddress->offset);
+		char crvlString[6 + lexicalLevelNumberOfDigits + offsetNumberOfDigits];
+ 		sprintf(
+ 			crvlString,
+			"CRVL %d,%d",
+			variable->lexicalAddress->lexicalLevel,
+			variable->lexicalAddress->offset
+		);
+ 		geraCodigo(NULL, crvlString);
+	;}
+    break;
+
   case 55:
-#line 136 "compilador.y"
+#line 170 "compilador.y"
     {
  		int numberOfDigits = getNumberOfDigits(atoi(token));
  		char crctString[5 + numberOfDigits];
@@ -1593,7 +1647,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 1597 "compilador.tab.c"
+#line 1651 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1807,7 +1861,7 @@ yyreturn:
 }
 
 
-#line 155 "compilador.y"
+#line 189 "compilador.y"
 
 
 main (int argc, char** argv) {
@@ -1830,6 +1884,7 @@ main (int argc, char** argv) {
  *  Inicia a Tabela de S�mbolos
  * ------------------------------------------------------------------- */
    compilerSymbolTable = createSymbolTable(SYMBOL_TABLE_CAPACITY);
+   operatorsStack = createStringStack(OPERATORS_STACK_CAPACITY);
    yyin=fp;
    yyparse();
 

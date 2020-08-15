@@ -10,14 +10,21 @@
 #include <string.h>
 #include "compilador.h"
 #include "symbolTable/symbolTable.h"
+#include "stringStack/stringStack.h"
 
 #define SYMBOL_TABLE_CAPACITY 100
+#define OPERATORS_STACK_CAPACITY 100
 
 int num_vars;
 symbolTableType* compilerSymbolTable;
 int currentLexicalLevel = 0;
 int offset = -1;
 symbolType* currentSymbol;
+stringStackType* operatorsStack;
+
+// For some reason I'd to put this function prototype here.
+// TODO: think of a better place to put it on
+char* getOperatorInstruction(char *operator);
 
 %}
 
@@ -122,8 +129,21 @@ relacao: IGUAL | DIFERENTE | MENOR | MAIOR | MENOR_OU_IGUAL | MAIOR_OU_IGUAL;
 
 expressao_simples: mais_ou_menos_ou_vazio termo lista_sinal_e_termo_ou_vazio;
 lista_sinal_e_termo_ou_vazio: lista_sinal_e_termo | ;
-lista_sinal_e_termo: lista_sinal_e_termo sinal_lista_sinal_e_termo termo | sinal_lista_sinal_e_termo termo ;
-sinal_lista_sinal_e_termo: MAIS | MENOS | OR;
+lista_sinal_e_termo: lista_sinal_e_termo sinal_lista_sinal_e_termo termo {
+		// desempilha a operacao
+		char* operator = popFromStringStack(operatorsStack);
+		char* instruction = getOperatorInstruction(operator);
+		geraCodigo(NULL, instruction);
+	} | sinal_lista_sinal_e_termo termo {
+		// desempilha a operacao
+		char* operator = popFromStringStack(operatorsStack);
+		char* instruction = getOperatorInstruction(operator);
+		geraCodigo(NULL, instruction);
+	};
+sinal_lista_sinal_e_termo: MAIS {
+		// empilha a soma
+		pushToStringStack(operatorsStack, token);
+	} | MENOS | OR;
 mais_ou_menos_ou_vazio: mais_ou_menos | ;
 mais_ou_menos: MAIS | MENOS ;
 
@@ -132,7 +152,19 @@ lista_sinal_e_fator_ou_vazio: lista_sinal_e_fator | ;
 lista_sinal_e_fator: lista_sinal_e_fator sinal_lista_sinal_fator fator | sinal_lista_sinal_fator fator ;
 sinal_lista_sinal_fator: VEZES | DIV | AND;
 
-fator: NOT fator | variavel |
+fator: NOT fator | variavel {
+		symbolType* variable = searchIntoSymbolTable(compilerSymbolTable, token);
+		int lexicalLevelNumberOfDigits = getNumberOfDigits(variable->lexicalAddress->lexicalLevel);
+		int offsetNumberOfDigits = getNumberOfDigits(variable->lexicalAddress->offset);
+		char crvlString[6 + lexicalLevelNumberOfDigits + offsetNumberOfDigits];
+ 		sprintf(
+ 			crvlString,
+			"CRVL %d,%d",
+			variable->lexicalAddress->lexicalLevel,
+			variable->lexicalAddress->offset
+		);
+ 		geraCodigo(NULL, crvlString);
+	} |
  	NUMERO {
  		int numberOfDigits = getNumberOfDigits(atoi(token));
  		char crctString[5 + numberOfDigits];
@@ -174,6 +206,7 @@ main (int argc, char** argv) {
  *  Inicia a Tabela de S�mbolos
  * ------------------------------------------------------------------- */
    compilerSymbolTable = createSymbolTable(SYMBOL_TABLE_CAPACITY);
+   operatorsStack = createStringStack(OPERATORS_STACK_CAPACITY);
    yyin=fp;
    yyparse();
 
