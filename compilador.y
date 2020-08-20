@@ -187,9 +187,9 @@ variavel: IDENT ;
 
 comando_composto: T_BEGIN comandos T_END ;
 
-comandos: lista_de_atribuicoes;
+comandos: comandos comando PONTO_E_VIRGULA | ;
 
-lista_de_atribuicoes: lista_de_atribuicoes atribuicao PONTO_E_VIRGULA | ;
+comando: atribuicao;
 
 
 %%

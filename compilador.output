@@ -110,10 +110,10 @@ Grammar
 
    57 comando_composto: T_BEGIN comandos T_END
 
-   58 comandos: lista_de_atribuicoes
+   58 comandos: comandos comando PONTO_E_VIRGULA
+   59         | /* empty */
 
-   59 lista_de_atribuicoes: lista_de_atribuicoes atribuicao PONTO_E_VIRGULA
-   60                     | /* empty */
+   60 comando: atribuicao
 
 
 Terminals, with rules where they appear
@@ -125,7 +125,7 @@ PROGRAM (259) 2
 ABRE_PARENTESES (260) 2 55
 FECHA_PARENTESES (261) 2 55
 VIRGULA (262) 15 17
-PONTO_E_VIRGULA (263) 2 13 59
+PONTO_E_VIRGULA (263) 2 13 58
 DOIS_PONTOS (264) 13
 PONTO (265) 2
 NUMERO (266) 54
@@ -194,7 +194,7 @@ lista_id_var (55)
 lista_idents (56)
     on left: 17 18, on right: 2 17
 atribuicao (57)
-    on left: 20, on right: 59
+    on left: 20, on right: 60
 @6 (58)
     on left: 19, on right: 20
 atribui_variavel (59)
@@ -234,9 +234,9 @@ variavel (75)
 comando_composto (76)
     on left: 57, on right: 4
 comandos (77)
-    on left: 58, on right: 57
-lista_de_atribuicoes (78)
-    on left: 59 60, on right: 58 59
+    on left: 58 59, on right: 57 58
+comando (78)
+    on left: 60, on right: 58
 
 
 state 0
@@ -404,10 +404,9 @@ state 20
 
    57 comando_composto: T_BEGIN . comandos T_END
 
-    $default  reduce using rule 60 (lista_de_atribuicoes)
+    $default  reduce using rule 59 (comandos)
 
-    comandos              go to state 25
-    lista_de_atribuicoes  go to state 26
+    comandos  go to state 25
 
 
 state 21
@@ -425,7 +424,7 @@ state 22
     IDENT     reduce using rule 11 (@4)
     $default  reduce using rule 7 (var)
 
-    declara_var  go to state 27
+    declara_var  go to state 26
     @4           go to state 24
 
 
@@ -440,45 +439,38 @@ state 24
 
    13 declara_var: @4 . lista_id_var DOIS_PONTOS tipo @5 PONTO_E_VIRGULA
 
-    IDENT  shift, and go to state 28
+    IDENT  shift, and go to state 27
 
-    lista_id_var  go to state 29
+    lista_id_var  go to state 28
 
 
 state 25
 
    57 comando_composto: T_BEGIN comandos . T_END
+   58 comandos: comandos . comando PONTO_E_VIRGULA
 
-    T_END  shift, and go to state 30
+    T_END  shift, and go to state 29
+    IDENT  shift, and go to state 30
+
+    atribuicao  go to state 31
+    comando     go to state 32
 
 
 state 26
-
-   58 comandos: lista_de_atribuicoes .
-   59 lista_de_atribuicoes: lista_de_atribuicoes . atribuicao PONTO_E_VIRGULA
-
-    IDENT  shift, and go to state 31
-
-    $default  reduce using rule 58 (comandos)
-
-    atribuicao  go to state 32
-
-
-state 27
 
     9 declara_vars: declara_vars declara_var .
 
     $default  reduce using rule 9 (declara_vars)
 
 
-state 28
+state 27
 
    16 lista_id_var: IDENT .
 
     $default  reduce using rule 16 (lista_id_var)
 
 
-state 29
+state 28
 
    13 declara_var: @4 lista_id_var . DOIS_PONTOS tipo @5 PONTO_E_VIRGULA
    15 lista_id_var: lista_id_var . VIRGULA IDENT
@@ -487,14 +479,14 @@ state 29
     DOIS_PONTOS  shift, and go to state 34
 
 
-state 30
+state 29
 
    57 comando_composto: T_BEGIN comandos T_END .
 
     $default  reduce using rule 57 (comando_composto)
 
 
-state 31
+state 30
 
    20 atribuicao: IDENT . @6 atribui_variavel
 
@@ -503,9 +495,16 @@ state 31
     @6  go to state 35
 
 
+state 31
+
+   60 comando: atribuicao .
+
+    $default  reduce using rule 60 (comando)
+
+
 state 32
 
-   59 lista_de_atribuicoes: lista_de_atribuicoes atribuicao . PONTO_E_VIRGULA
+   58 comandos: comandos comando . PONTO_E_VIRGULA
 
     PONTO_E_VIRGULA  shift, and go to state 36
 
@@ -537,9 +536,9 @@ state 35
 
 state 36
 
-   59 lista_de_atribuicoes: lista_de_atribuicoes atribuicao PONTO_E_VIRGULA .
+   58 comandos: comandos comando PONTO_E_VIRGULA .
 
-    $default  reduce using rule 59 (lista_de_atribuicoes)
+    $default  reduce using rule 58 (comandos)
 
 
 state 37
