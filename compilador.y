@@ -40,8 +40,16 @@ char* getOperatorInstruction(char *operator);
 
 programa: { geraCodigo (NULL, "INPP"); }
 	PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO {
-             geraCodigo (NULL, "PARA");
-             printSymbolTable(compilerSymbolTable);
+		// DMEM
+		int numberOfAllocatedVariables = compilerSymbolTable->top + 1;
+		int numberOfDigits = getNumberOfDigits(numberOfAllocatedVariables );
+		char dmemString[5 + numberOfDigits];
+		sprintf(dmemString, "DMEN %d", numberOfAllocatedVariables );
+		geraCodigo (NULL, dmemString);
+
+		// PARA
+		geraCodigo (NULL, "PARA");
+		printSymbolTable(compilerSymbolTable);
 	};
 
 bloco: parte_declara_vars { } comando_composto ;
