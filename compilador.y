@@ -34,11 +34,11 @@ char* getOperatorInstruction(char *operator);
 %token FECHA_COLCHETES ABRE_CHAVES FECHA_CHAVES LABEL TYPE
 %token ARRAY PROCEDURE FUNCTION GOTO WHILE DO DIV AND NOT OR
 %token MENOR MAIOR DIFERENTE MAIOR_OU_IGUAL MENOR_OU_IGUAL
-%token IGUAL MENOS MAIS VEZES
+%token IGUAL MENOS MAIS VEZES READ WRITE
 
 %%
 
-programa: { geraCodigo (NULL, "INPP"); }
+programa: { geraCodigo (NULL, "INPP");}
 	PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO {
 		// DMEM
 		int numberOfAllocatedVariables = compilerSymbolTable->top + 1;
@@ -129,6 +129,8 @@ atribui_variavel: ATRIBUICAO expressao {
 		geraCodigo(NULL, armzString);
 	};
 
+lista_de_expressoes: lista_de_expressoes VIRGULA expressao | expressao;
+
 expressao: expressao_simples relacao_expressao_simples_ou_vazio;
 relacao_expressao_simples_ou_vazio: relacao_expressao_simples | ;
 relacao_expressao_simples: relacao expressao_simples;
@@ -172,8 +174,8 @@ fator: NOT fator | variavel {
 			variable->lexicalAddress->offset
 		);
  		geraCodigo(NULL, crvlString);
-	} |
- 	NUMERO {
+	}
+	| NUMERO {
  		int numberOfDigits = getNumberOfDigits(atoi(token));
  		char crctString[5 + numberOfDigits];
  		sprintf(crctString, "CRCT %s", token);
@@ -182,15 +184,50 @@ fator: NOT fator | variavel {
 
 variavel: IDENT ;
 
+chamada_de_procedimento: IDENT sessao_parametros_ou_vazio ;
+
+sessao_parametros_ou_vazio: ABRE_PARENTESES lista_de_expressoes FECHA_PARENTESES | ;
 
 
 
-comando_composto: T_BEGIN comandos T_END ;
+comando_composto: T_BEGIN comandos_ou_vazio T_END ;
 
-comandos: comandos comando PONTO_E_VIRGULA | ;
+comandos_ou_vazio: comandos | ;
 
-comando: atribuicao;
+comandos: comandos PONTO_E_VIRGULA comando | comando ;
 
+comando: comando_sem_rotulo;
+
+comando_sem_rotulo:
+	atribuicao
+	| comando_composto
+	| READ ABRE_PARENTESES lista_leitura FECHA_PARENTESES
+	| WRITE ABRE_PARENTESES lista_impressao FECHA_PARENTESES
+	| ;
+
+// TODO gerar ARMZ para onde vai a leitura
+lista_leitura: lista_leitura VIRGULA identificador {
+		geraCodigo (NULL, "LEIT");
+		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
+		generateARMZCode(currentSymbol);
+	} | identificador {
+		geraCodigo (NULL, "LEIT");
+		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
+		generateARMZCode(symbol);
+	};
+
+// TODO terminar isso
+lista_impressao: lista_impressao VIRGULA identificador {
+		geraCodigo(NULL, "IMPR");
+	} | lista_impressao VIRGULA NUMERO {
+                geraCodigo(NULL, "IMPR");
+	} | identificador {
+		geraCodigo(NULL, "IMPR");
+	} | NUMERO {
+                geraCodigo(NULL, "IMPR");
+	} ;
+
+identificador: IDENT;
 
 %%
 

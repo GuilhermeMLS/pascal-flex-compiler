@@ -77,7 +77,9 @@
      IGUAL = 293,
      MENOS = 294,
      MAIS = 295,
-     VEZES = 296
+     VEZES = 296,
+     READ = 297,
+     WRITE = 298
    };
 #endif
 /* Tokens.  */
@@ -120,6 +122,8 @@
 #define MENOS 294
 #define MAIS 295
 #define VEZES 296
+#define READ 297
+#define WRITE 298
 
 
 

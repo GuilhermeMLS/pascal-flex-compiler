@@ -86,3 +86,28 @@ char* getOperatorInstruction(char *operator) {
     }
     return NULL;
 }
+
+void generateARMZCode(symbolType* symbol) {
+    int lexicalLevelNumberOfDigits = getNumberOfDigits(symbol->lexicalAddress->lexicalLevel);
+    int offsetNumberOfDigits = getNumberOfDigits(symbol->lexicalAddress->offset);
+    char armzString[6 + lexicalLevelNumberOfDigits + offsetNumberOfDigits];
+    if (
+        symbol->category == formalParameter
+        && symbol->passingMechanism == passByReference
+    ) {
+        sprintf(
+            armzString,
+            "ARMI %d,%d",
+            symbol->lexicalAddress->lexicalLevel,
+            symbol->lexicalAddress->offset
+        );
+    } else {
+        sprintf(
+            armzString,
+            "ARMZ %d,%d",
+            symbol->lexicalAddress->lexicalLevel,
+            symbol->lexicalAddress->offset
+        );
+    }
+    geraCodigo(NULL, armzString);
+}
