@@ -5,4 +5,5 @@ begin
   c := 3;
   a := b + 1 + 3;
   read(c, a);
+  write(a, c);
 end.

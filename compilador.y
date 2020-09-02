@@ -218,12 +218,24 @@ lista_leitura: lista_leitura VIRGULA identificador {
 
 // TODO terminar isso
 lista_impressao: lista_impressao VIRGULA identificador {
+		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
+		generateCRVLCode(symbol);
+		geraCodigo(NULL, "IMPR");
+	} | identificador {
+		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
+		generateCRVLCode(symbol);
 		geraCodigo(NULL, "IMPR");
 	} | lista_impressao VIRGULA NUMERO {
+		int numberOfDigits = getNumberOfDigits(atoi(token));
+                char crctString[5 + numberOfDigits];
+                sprintf(crctString, "CRCT %s", token);
+                geraCodigo(NULL, crctString);
                 geraCodigo(NULL, "IMPR");
-	} | identificador {
-		geraCodigo(NULL, "IMPR");
 	} | NUMERO {
+		int numberOfDigits = getNumberOfDigits(atoi(token));
+		char crctString[5 + numberOfDigits];
+		sprintf(crctString, "CRCT %s", token);
+		geraCodigo(NULL, crctString);
                 geraCodigo(NULL, "IMPR");
 	} ;
 

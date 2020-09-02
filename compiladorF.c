@@ -111,3 +111,17 @@ void generateARMZCode(symbolType* symbol) {
     }
     geraCodigo(NULL, armzString);
 }
+
+
+void generateCRVLCode(symbolType* symbol) {
+    int lexicalLevelNumberOfDigits = getNumberOfDigits(symbol->lexicalAddress->lexicalLevel);
+    int offsetNumberOfDigits = getNumberOfDigits(symbol->lexicalAddress->offset);
+    char crvlString[6 + lexicalLevelNumberOfDigits + offsetNumberOfDigits];
+    sprintf(
+        crvlString,
+        "CRVL %d,%d",
+        symbol->lexicalAddress->lexicalLevel,
+        symbol->lexicalAddress->offset
+    );
+    geraCodigo(NULL, crvlString);
+}

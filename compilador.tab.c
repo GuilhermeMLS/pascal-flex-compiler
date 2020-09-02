@@ -493,7 +493,7 @@ static const yytype_uint8 yyprhs[] =
      102,   104,   106,   107,   109,   111,   114,   116,   117,   121,
      124,   126,   128,   130,   133,   135,   137,   141,   143,   147,
      149,   150,   154,   156,   158,   160,   162,   167,   172,   173,
-     177,   179,   183,   187,   189,   191
+     177,   179,   183,   185,   189,   191
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -517,7 +517,7 @@ static const yytype_int8 yyrhs[] =
       80,     8,    81,    -1,    81,    -1,    82,    -1,    59,    -1,
       78,    -1,    42,     5,    83,     6,    -1,    43,     5,    84,
        6,    -1,    -1,    83,     7,    85,    -1,    85,    -1,    84,
-       7,    85,    -1,    84,     7,    11,    -1,    85,    -1,    11,
+       7,    85,    -1,    85,    -1,    84,     7,    11,    -1,    11,
       -1,    15,    -1
 };
 
@@ -531,7 +531,7 @@ static const yytype_uint8 yyrline[] =
      156,   157,   157,   158,   158,   160,   161,   161,   162,   162,
      163,   163,   163,   165,   165,   178,   183,   185,   193,   195,
      195,   197,   197,   199,   202,   203,   204,   205,   206,   209,
-     213,   220,   222,   224,   226,   230
+     213,   220,   224,   228,   234,   242
 };
 #endif
 
@@ -597,7 +597,7 @@ static const yytype_uint8 yyr2[] =
        1,     1,     0,     1,     1,     2,     1,     0,     3,     2,
        1,     1,     1,     2,     1,     1,     3,     1,     3,     1,
        0,     3,     1,     1,     1,     1,     4,     4,     0,     3,
-       1,     3,     3,     1,     1,     1
+       1,     3,     1,     3,     1,     1
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -610,10 +610,10 @@ static const yytype_uint8 yydefact[] =
       60,     5,     8,    11,     0,    20,     0,     0,    64,    65,
        0,    59,    62,    63,    10,    17,     0,     0,     0,     0,
       58,    68,     0,     0,    42,    21,    75,     0,    70,    74,
-       0,    73,    61,    16,    15,    13,    44,    43,    22,    25,
+       0,    72,    61,    16,    15,    13,    44,    43,    22,    25,
        0,    41,    66,     0,    67,     0,     0,    29,    30,    28,
       32,    31,    27,    23,    24,    42,    42,    55,    57,     0,
-      35,    47,    54,    69,    72,    71,    14,    26,     0,    53,
+      35,    47,    54,    69,    73,    71,    14,    26,     0,    53,
       40,    39,    38,    33,    34,     0,    51,    52,    50,    45,
       46,     0,    56,     0,    37,     0,    49,    36,    48
 };
@@ -1703,34 +1703,46 @@ yyreduce:
   case 71:
 #line 220 "compilador.y"
     {
+		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
+		generateCRVLCode(symbol);
 		geraCodigo(NULL, "IMPR");
 	;}
     break;
 
   case 72:
-#line 222 "compilador.y"
-    {
-                geraCodigo(NULL, "IMPR");
-	;}
-    break;
-
-  case 73:
 #line 224 "compilador.y"
     {
+		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
+		generateCRVLCode(symbol);
 		geraCodigo(NULL, "IMPR");
 	;}
     break;
 
-  case 74:
-#line 226 "compilador.y"
+  case 73:
+#line 228 "compilador.y"
     {
+		int numberOfDigits = getNumberOfDigits(atoi(token));
+                char crctString[5 + numberOfDigits];
+                sprintf(crctString, "CRCT %s", token);
+                geraCodigo(NULL, crctString);
+                geraCodigo(NULL, "IMPR");
+	;}
+    break;
+
+  case 74:
+#line 234 "compilador.y"
+    {
+		int numberOfDigits = getNumberOfDigits(atoi(token));
+		char crctString[5 + numberOfDigits];
+		sprintf(crctString, "CRCT %s", token);
+		geraCodigo(NULL, crctString);
                 geraCodigo(NULL, "IMPR");
 	;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1734 "compilador.tab.c"
+#line 1746 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1944,7 +1956,7 @@ yyreturn:
 }
 
 
-#line 232 "compilador.y"
+#line 244 "compilador.y"
 
 
 main (int argc, char** argv) {

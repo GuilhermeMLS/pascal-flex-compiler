@@ -149,8 +149,8 @@ Grammar
    69              | identificador
 
    70 lista_impressao: lista_impressao VIRGULA identificador
-   71                | lista_impressao VIRGULA NUMERO
-   72                | identificador
+   71                | identificador
+   72                | lista_impressao VIRGULA NUMERO
    73                | NUMERO
 
    74 identificador: IDENT
@@ -164,11 +164,11 @@ INTEIRO (258)
 PROGRAM (259) 2
 ABRE_PARENTESES (260) 2 55 65 66
 FECHA_PARENTESES (261) 2 55 65 66
-VIRGULA (262) 15 17 68 70 71
+VIRGULA (262) 15 17 68 70 72
 PONTO_E_VIRGULA (263) 2 13 60
 DOIS_PONTOS (264) 13
 PONTO (265) 2
-NUMERO (266) 54 71 73
+NUMERO (266) 54 72 73
 T_BEGIN (267) 57
 T_END (268) 57
 VAR (269) 7
@@ -286,9 +286,9 @@ comando_sem_rotulo (82)
 lista_leitura (83)
     on left: 68 69, on right: 65 68
 lista_impressao (84)
-    on left: 70 71 72 73, on right: 66 70 71
+    on left: 70 71 72 73, on right: 66 70 72
 identificador (85)
-    on left: 74, on right: 68 69 70 72
+    on left: 74, on right: 68 69 70 71
 
 
 state 0
@@ -726,7 +726,7 @@ state 50
 
    66 comando_sem_rotulo: WRITE ABRE_PARENTESES lista_impressao . FECHA_PARENTESES
    70 lista_impressao: lista_impressao . VIRGULA identificador
-   71                | lista_impressao . VIRGULA NUMERO
+   72                | lista_impressao . VIRGULA NUMERO
 
     FECHA_PARENTESES  shift, and go to state 64
     VIRGULA           shift, and go to state 65
@@ -734,9 +734,9 @@ state 50
 
 state 51
 
-   72 lista_impressao: identificador .
+   71 lista_impressao: identificador .
 
-    $default  reduce using rule 72 (lista_impressao)
+    $default  reduce using rule 71 (lista_impressao)
 
 
 state 52
@@ -855,7 +855,7 @@ state 64
 state 65
 
    70 lista_impressao: lista_impressao VIRGULA . identificador
-   71                | lista_impressao VIRGULA . NUMERO
+   72                | lista_impressao VIRGULA . NUMERO
 
     NUMERO  shift, and go to state 84
     IDENT   shift, and go to state 46
@@ -1028,9 +1028,9 @@ state 83
 
 state 84
 
-   71 lista_impressao: lista_impressao VIRGULA NUMERO .
+   72 lista_impressao: lista_impressao VIRGULA NUMERO .
 
-    $default  reduce using rule 71 (lista_impressao)
+    $default  reduce using rule 72 (lista_impressao)
 
 
 state 85
