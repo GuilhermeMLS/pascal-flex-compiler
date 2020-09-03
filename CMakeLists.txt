@@ -12,4 +12,6 @@ add_executable(ProjetoBaseGuilherme_copy
         compilador.h
         compiladorF.c
         stringStack/stringStack.h
-        stringStack/stringStack.c)
+        stringStack/stringStack.c
+        genericStack/genericStack.h
+        genericStack/genericStack.c)

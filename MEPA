@@ -14,9 +14,9 @@
      ARMZ 0,2
      LEIT
      ARMZ 0,0
-     CRVL 0,0
+     CRCT 3
      IMPR
-     CRVL 0,2
+     CRCT 4
      IMPR
      DMEN 3
      PARA

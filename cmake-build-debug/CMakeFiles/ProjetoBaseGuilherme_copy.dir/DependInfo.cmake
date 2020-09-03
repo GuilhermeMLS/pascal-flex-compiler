@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
   "/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/compiladorF.c" "/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/cmake-build-debug/CMakeFiles/ProjetoBaseGuilherme_copy.dir/compiladorF.c.o"
+  "/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/genericStack/genericStack.c" "/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/cmake-build-debug/CMakeFiles/ProjetoBaseGuilherme_copy.dir/genericStack/genericStack.c.o"
   "/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/stringStack/stringStack.c" "/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/cmake-build-debug/CMakeFiles/ProjetoBaseGuilherme_copy.dir/stringStack/stringStack.c.o"
   "/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/symbolTable/symbolTable.c" "/Users/guilhermemorais/Documents/UFPR/EAD/Compiladores/ProjetoBaseGuilherme/cmake-build-debug/CMakeFiles/ProjetoBaseGuilherme_copy.dir/symbolTable/symbolTable.c.o"
   )

@@ -157,11 +157,11 @@ int identifiersAreEqual(char* identifier1, char* identifier2) {
 
 char* getSymbolTypeString(int type) {
     switch(type) {
-        case integer:
+        case integerType:
             return "Integer";
-        case character:
+        case characterType:
             return "Character";
-        case floatingPoint:
+        case floatingPointType:
             return "Floating Point";
         default:
             return "Unknown type";

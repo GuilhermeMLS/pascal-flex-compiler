@@ -150,6 +150,33 @@ compiladorF.c.s:
 	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/compiladorF.c.s
 .PHONY : compiladorF.c.s
 
+genericStack/genericStack.o: genericStack/genericStack.c.o
+
+.PHONY : genericStack/genericStack.o
+
+# target to build an object file
+genericStack/genericStack.c.o:
+	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/genericStack/genericStack.c.o
+.PHONY : genericStack/genericStack.c.o
+
+genericStack/genericStack.i: genericStack/genericStack.c.i
+
+.PHONY : genericStack/genericStack.i
+
+# target to preprocess a source file
+genericStack/genericStack.c.i:
+	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/genericStack/genericStack.c.i
+.PHONY : genericStack/genericStack.c.i
+
+genericStack/genericStack.s: genericStack/genericStack.c.s
+
+.PHONY : genericStack/genericStack.s
+
+# target to generate assembly for a file
+genericStack/genericStack.c.s:
+	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/genericStack/genericStack.c.s
+.PHONY : genericStack/genericStack.c.s
+
 stringStack/stringStack.o: stringStack/stringStack.c.o
 
 .PHONY : stringStack/stringStack.o
@@ -216,6 +243,9 @@ help:
 	@echo "... compiladorF.o"
 	@echo "... compiladorF.i"
 	@echo "... compiladorF.s"
+	@echo "... genericStack/genericStack.o"
+	@echo "... genericStack/genericStack.i"
+	@echo "... genericStack/genericStack.s"
 	@echo "... stringStack/stringStack.o"
 	@echo "... stringStack/stringStack.i"
 	@echo "... stringStack/stringStack.s"

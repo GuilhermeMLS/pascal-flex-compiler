@@ -1,3 +1,5 @@
+#ifndef COMPILADOR_STACK
+#define COMPILADOR_STACK
 /* -------------------------------------------------------------------
  *            Arquivo: compilaodr.h
  * -------------------------------------------------------------------
@@ -10,6 +12,11 @@
  * Tipos, prot�tipos e vai�veis globais do compilador
  *
  * ------------------------------------------------------------------- */
+#define BUFFER_MAX_SIZE 1023
+char buffer[BUFFER_MAX_SIZE];
+#define generateCodeWithArguments(label, fmt, ...) \
+    sprintf(buffer, fmt, __VA_ARGS__); \
+        geraCodigo(label, buffer);
 
 #define TAM_TOKEN 16
 
@@ -73,4 +80,6 @@ simbolos simbolo, relacao;
 char token[TAM_TOKEN];
 
 
+
+#endif
 

@@ -1,10 +1,23 @@
+#ifndef SYMBOL_TABLE
+#define SYMBOL_TABLE
+
 #define MAXIMUM_IDENTIFIER_SIZE 255
 
-enum variableTypes {
-    integer = 1,
-    character = 2,
-    floatingPoint = 3
-};
+typedef enum types {
+    integerType = 1,
+    characterType = 2,
+    floatingPointType = 3,
+    voidType = 4,
+    booleanType = 5
+} typeType;
+
+typedef enum operation {
+    mathematicalExpression,
+    comparison,
+    attribution,
+    booleanOperation,
+    negation,
+} operationType;
 
 enum symbolCategories {
     simpleVariable = 1,
@@ -75,3 +88,6 @@ char* getPassingMechanismString(int passingMechanism);
 void printFormalParameters(formalParameterType* formalParameters, int numberOfParameters);
 void updateSymbolType(symbolTableType* symbolTable, char* identifier, int newType);
 void updateLastSymbolsTypes(symbolTableType* symbolTable, int numberOfLastSymbols, int newType);
+
+
+#endif

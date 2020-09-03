@@ -19,7 +19,9 @@
 #include "compilador.h"
 #include "symbolTable/symbolTable.h"
 #include "stringStack/stringStack.h"
+#include "genericStack/genericStack.h"
 
+#define LABEL_MAX_SIZE 10
 
 /* -------------------------------------------------------------------
  *  vari�veis globais
@@ -60,13 +62,13 @@ int getNumberOfDigits(int number) {
 
 int getTypeBasedOnToken(char* typeToken) {
     if (strcmp(typeToken, "integer") == 0) {
-        return integer;
+        return integerType;
     }
     if (strcmp(typeToken, "char") == 0) {
-        return character;
+        return characterType;
     }
     if (strcmp(typeToken, "real") == 0) {
-        return floatingPoint;
+        return floatingPointType;
     }
     return 0;
 }
@@ -124,4 +126,20 @@ void generateCRVLCode(symbolType* symbol) {
         symbol->lexicalAddress->offset
     );
     geraCodigo(NULL, crvlString);
+}
+
+void generateCRCTCode(char* constantToken) {
+    int numberOfDigits = getNumberOfDigits(atoi(constantToken));
+    char CRCTString[5 + numberOfDigits];
+    sprintf(CRCTString, "CRCT %s", constantToken);
+    geraCodigo(NULL, CRCTString);
+}
+
+int generateLabel(stringStackType* stack, char** label, int* numberOfLabels) {
+    *label = malloc(sizeof(char[LABEL_MAX_SIZE]));
+    sprintf(*label, "R%02d", *numberOfLabels);
+    *numberOfLabels = *numberOfLabels + 1;
+    pushToStringStack(stack, *label);
+
+    return 0;
 }

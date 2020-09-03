@@ -11,16 +11,32 @@
 #include "compilador.h"
 #include "symbolTable/symbolTable.h"
 #include "stringStack/stringStack.h"
+#include "genericStack/genericStack.h"
 
-#define SYMBOL_TABLE_CAPACITY 100
-#define OPERATORS_STACK_CAPACITY 100
+#define SYMBOL_TABLE_CAPACITY 500
+#define OPERATORS_STACK_CAPACITY 500
+#define LABELS_STACK_CAPACITY 500
+#define TYPES_STACK_CAPACITY 500
+#define FALSE 0
+#define FALSE 1
 
 int num_vars;
+int numberOfLabels = 0;
+
+int callingProcedure = FALSE;
+
+char* currentLabel;
+typeType* currentType;
+char* auxLabel;
+
 symbolTableType* compilerSymbolTable;
 int currentLexicalLevel = 0;
 int offset = -1;
 symbolType* currentSymbol;
 stringStackType* operatorsStack;
+stringStackType* labelsStack;
+genericStackType typesStack;
+
 
 // For some reason I'd to put this function prototype here.
 // TODO: think of a better place to put it on
@@ -38,17 +54,17 @@ char* getOperatorInstruction(char *operator);
 
 %%
 
-programa: { geraCodigo (NULL, "INPP");}
+programa: { geraCodigo(NULL, "INPP");}
 	PROGRAM IDENT ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO {
 		// DMEM
 		int numberOfAllocatedVariables = compilerSymbolTable->top + 1;
 		int numberOfDigits = getNumberOfDigits(numberOfAllocatedVariables );
 		char dmemString[5 + numberOfDigits];
 		sprintf(dmemString, "DMEN %d", numberOfAllocatedVariables );
-		geraCodigo (NULL, dmemString);
+		geraCodigo(NULL, dmemString);
 
 		// PARA
-		geraCodigo (NULL, "PARA");
+		geraCodigo(NULL, "PARA");
 		printSymbolTable(compilerSymbolTable);
 	};
 
@@ -72,7 +88,7 @@ declara_var : { }  lista_id_var DOIS_PONTOS
 		int numberOfDigits = getNumberOfDigits(num_vars);
 		char amemString[5 + numberOfDigits];
               	sprintf(amemString, "AMEM %d", num_vars);
-              	geraCodigo (NULL, amemString);
+              	geraCodigo(NULL, amemString);
 
 
 		// Here we should update the last num_vars symbols with the correct type
@@ -131,31 +147,72 @@ atribui_variavel: ATRIBUICAO expressao {
 
 lista_de_expressoes: lista_de_expressoes VIRGULA expressao | expressao;
 
-expressao: expressao_simples relacao_expressao_simples_ou_vazio;
-relacao_expressao_simples_ou_vazio: relacao_expressao_simples | ;
-relacao_expressao_simples: relacao expressao_simples;
 
-relacao: IGUAL | DIFERENTE | MENOR | MAIOR | MENOR_OU_IGUAL | MAIOR_OU_IGUAL;
 
-expressao_simples: mais_ou_menos_ou_vazio termo lista_sinal_e_termo_ou_vazio;
-lista_sinal_e_termo_ou_vazio: lista_sinal_e_termo | ;
-lista_sinal_e_termo: lista_sinal_e_termo sinal_lista_sinal_e_termo termo {
-		// desempilha a operacao
-		char* operator = popFromStringStack(operatorsStack);
-		char* instruction = getOperatorInstruction(operator);
-		geraCodigo(NULL, instruction);
-	} | sinal_lista_sinal_e_termo termo {
-		// desempilha a operacao
-		char* operator = popFromStringStack(operatorsStack);
-		char* instruction = getOperatorInstruction(operator);
-		geraCodigo(NULL, instruction);
-	};
-sinal_lista_sinal_e_termo: MAIS {
-		// empilha a soma
-		pushToStringStack(operatorsStack, token);
-	} | MENOS | OR;
-mais_ou_menos_ou_vazio: mais_ou_menos | ;
-mais_ou_menos: MAIS | MENOS ;
+
+
+
+expressao: expressao { callingProcedure = FALSE; } MAIOR expressao_simples {
+		checkTypes(&typesStack, comparison);
+		geraCodigo(NULL, "CMMA");
+	} | expressao { callingProcedure = FALSE; } MAIOR_OU_IGUAL expressao_simples {
+		checkTypes(&typesStack, comparison);
+		geraCodigo(NULL, "CMAG");
+	} | expressao { callingProcedure = FALSE; } MENOR expressao_simples {
+		checkTypes(&typesStack, comparison);
+		geraCodigo(NULL, "CMME");
+	} | expressao { callingProcedure = FALSE; } MENOR_OU_IGUAL expressao_simples {
+		checkTypes(&typesStack, comparison);
+		geraCodigo(NULL, "CMEG");
+	} | expressao { callingProcedure = FALSE; } IGUAL expressao_simples {
+		checkTypes(&typesStack, comparison);
+		geraCodigo(NULL, "CMIG");
+	} | expressao_simples ;
+
+
+expressao_simples: expressao_simples { callingProcedure = FALSE; } MAIS termo {
+			//checkTypes(&typesStack, mathematicalExpression);
+			geraCodigo(NULL, "SOMA");
+		} | expressao_simples { callingProcedure = FALSE; } MENOS termo {
+			checkTypes(&typesStack, mathematicalExpression);
+			geraCodigo(NULL, "SUBT");
+		 } | expressao_simples { callingProcedure = FALSE; } OR termo {
+			checkTypes (&typesStack, comparison);
+			geraCodigo(NULL, "DISJ");
+		} | termo;
+
+
+
+//expressao: expressao_simples relacao_expressao_simples_ou_vazio;
+//
+//relacao_expressao_simples_ou_vazio: relacao_expressao_simples | ;
+//relacao_expressao_simples: relacao expressao_simples;
+//
+//relacao: IGUAL | DIFERENTE | MENOR | MAIOR | MENOR_OU_IGUAL | MAIOR_OU_IGUAL;
+//
+//expressao_simples: mais_ou_menos_ou_vazio termo lista_sinal_e_termo_ou_vazio;
+
+
+
+
+//lista_sinal_e_termo_ou_vazio: lista_sinal_e_termo | ;
+//lista_sinal_e_termo: lista_sinal_e_termo sinal_lista_sinal_e_termo termo {
+//		// desempilha a operacao
+//		char* operator = popFromStringStack(operatorsStack);
+//		char* instruction = getOperatorInstruction(operator);
+//		geraCodigo(NULL, instruction);
+//	} | sinal_lista_sinal_e_termo termo {
+//		// desempilha a operacao
+//		char* operator = popFromStringStack(operatorsStack);
+//		char* instruction = getOperatorInstruction(operator);
+//		geraCodigo(NULL, instruction);
+//	};
+//sinal_lista_sinal_e_termo: MAIS {
+//		// empilha a soma
+//		pushToStringStack(operatorsStack, token);
+//	} | MENOS | OR;
+//mais_ou_menos_ou_vazio: mais_ou_menos | ;
+//mais_ou_menos: MAIS | MENOS ;
 
 termo: fator lista_sinal_e_fator_ou_vazio;
 lista_sinal_e_fator_ou_vazio: lista_sinal_e_fator | ;
@@ -164,23 +221,15 @@ sinal_lista_sinal_fator: VEZES | DIV | AND;
 
 fator: NOT fator | variavel {
 		symbolType* variable = searchIntoSymbolTable(compilerSymbolTable, token);
-		int lexicalLevelNumberOfDigits = getNumberOfDigits(variable->lexicalAddress->lexicalLevel);
-		int offsetNumberOfDigits = getNumberOfDigits(variable->lexicalAddress->offset);
-		char crvlString[6 + lexicalLevelNumberOfDigits + offsetNumberOfDigits];
- 		sprintf(
- 			crvlString,
-			"CRVL %d,%d",
+ 		generateCodeWithArguments(
+ 			NULL,
+		 	"CRVL %d,%d",
 			variable->lexicalAddress->lexicalLevel,
 			variable->lexicalAddress->offset
 		);
- 		geraCodigo(NULL, crvlString);
-	}
-	| NUMERO {
- 		int numberOfDigits = getNumberOfDigits(atoi(token));
- 		char crctString[5 + numberOfDigits];
- 		sprintf(crctString, "CRCT %s", token);
- 		geraCodigo(NULL, crctString);
- 	} | ABRE_PARENTESES expressao FECHA_PARENTESES ;
+	} | NUMERO {
+		generateCodeWithArguments(NULL, "CRCT %s", token);
+	} | ABRE_PARENTESES expressao FECHA_PARENTESES ;
 
 variavel: IDENT ;
 
@@ -188,7 +237,25 @@ chamada_de_procedimento: IDENT sessao_parametros_ou_vazio ;
 
 sessao_parametros_ou_vazio: ABRE_PARENTESES lista_de_expressoes FECHA_PARENTESES | ;
 
-
+repeticao: WHILE {
+		/* Generate the start label */
+		generateLabel(&labelsStack, &currentLabel, &numberOfLabels);
+		geraCodigo(currentLabel, "NADA");
+	} expressao {
+		/* Generate the end label */
+		generateLabel(&labelsStack, &currentLabel, &numberOfLabels);
+		currentType = (typeType *) popFromGenericStack(&typesStack);
+		if (*currentType != booleanType) {
+			puts("\nSyntax error: operation is not boolean\n");
+			exit(-1);
+		}
+		generateCodeWithArguments(NULL, "DSVF %s", currentLabel);
+	} DO comando {
+		auxLabel = popFromStringStack(&labelsStack);
+		currentLabel = popFromStringStack(&labelsStack);
+		generateCodeWithArguments(NULL, "DSVS %s", currentLabel);
+		geraCodigo(auxLabel, "NADA");
+	} ;
 
 comando_composto: T_BEGIN comandos_ou_vazio T_END ;
 
@@ -201,17 +268,18 @@ comando: comando_sem_rotulo;
 comando_sem_rotulo:
 	atribuicao
 	| comando_composto
+	| repeticao
 	| READ ABRE_PARENTESES lista_leitura FECHA_PARENTESES
 	| WRITE ABRE_PARENTESES lista_impressao FECHA_PARENTESES
 	| ;
 
 // TODO gerar ARMZ para onde vai a leitura
 lista_leitura: lista_leitura VIRGULA identificador {
-		geraCodigo (NULL, "LEIT");
+		geraCodigo(NULL, "LEIT");
 		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
 		generateARMZCode(currentSymbol);
 	} | identificador {
-		geraCodigo (NULL, "LEIT");
+		geraCodigo(NULL, "LEIT");
 		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
 		generateARMZCode(symbol);
 	};
@@ -226,16 +294,10 @@ lista_impressao: lista_impressao VIRGULA identificador {
 		generateCRVLCode(symbol);
 		geraCodigo(NULL, "IMPR");
 	} | lista_impressao VIRGULA NUMERO {
-		int numberOfDigits = getNumberOfDigits(atoi(token));
-                char crctString[5 + numberOfDigits];
-                sprintf(crctString, "CRCT %s", token);
-                geraCodigo(NULL, crctString);
+		generateCRCTCode(token);
                 geraCodigo(NULL, "IMPR");
 	} | NUMERO {
-		int numberOfDigits = getNumberOfDigits(atoi(token));
-		char crctString[5 + numberOfDigits];
-		sprintf(crctString, "CRCT %s", token);
-		geraCodigo(NULL, crctString);
+		generateCRCTCode(token);
                 geraCodigo(NULL, "IMPR");
 	} ;
 
@@ -264,6 +326,8 @@ main (int argc, char** argv) {
  * ------------------------------------------------------------------- */
    compilerSymbolTable = createSymbolTable(SYMBOL_TABLE_CAPACITY);
    operatorsStack = createStringStack(OPERATORS_STACK_CAPACITY);
+   labelsStack = createStringStack(LABELS_STACK_CAPACITY);
+   createGenericStack(&typesStack);
    yyin=fp;
    yyparse();
 
