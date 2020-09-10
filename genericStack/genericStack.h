@@ -13,7 +13,7 @@ typedef struct genericStack {
 } genericStackType;
 
 int createGenericStack(genericStackType*);
-int pushToGenericStack (genericStackType*, void*);
+int pushToGenericStack(genericStackType*, void*);
 void printGenericStack(genericStackType*);
 void* popFromGenericStack(genericStackType*);
 void* popAll(genericStackType*);

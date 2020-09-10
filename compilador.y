@@ -18,7 +18,7 @@
 #define LABELS_STACK_CAPACITY 500
 #define TYPES_STACK_CAPACITY 500
 #define FALSE 0
-#define FALSE 1
+#define TRUE 1
 
 int num_vars;
 int numberOfLabels = 0;
@@ -50,7 +50,7 @@ char* getOperatorInstruction(char *operator);
 %token FECHA_COLCHETES ABRE_CHAVES FECHA_CHAVES LABEL TYPE
 %token ARRAY PROCEDURE FUNCTION GOTO WHILE DO DIV AND NOT OR
 %token MENOR MAIOR DIFERENTE MAIOR_OU_IGUAL MENOR_OU_IGUAL
-%token IGUAL MENOS MAIS VEZES READ WRITE
+%token IGUAL MENOS MAIS VEZES READ WRITE FALSE_TOKEN TRUE_TOKEN
 
 %%
 
@@ -149,9 +149,6 @@ lista_de_expressoes: lista_de_expressoes VIRGULA expressao | expressao;
 
 
 
-
-
-
 expressao: expressao { callingProcedure = FALSE; } MAIOR expressao_simples {
 		checkTypes(&typesStack, comparison);
 		geraCodigo(NULL, "CMMA");
@@ -183,43 +180,24 @@ expressao_simples: expressao_simples { callingProcedure = FALSE; } MAIS termo {
 
 
 
-//expressao: expressao_simples relacao_expressao_simples_ou_vazio;
-//
-//relacao_expressao_simples_ou_vazio: relacao_expressao_simples | ;
-//relacao_expressao_simples: relacao expressao_simples;
-//
-//relacao: IGUAL | DIFERENTE | MENOR | MAIOR | MENOR_OU_IGUAL | MAIOR_OU_IGUAL;
-//
-//expressao_simples: mais_ou_menos_ou_vazio termo lista_sinal_e_termo_ou_vazio;
+termo	: termo { callingProcedure = FALSE; } VEZES fator {
+		checkTypes(&typesStack, mathematicalExpression);
+		geraCodigo(NULL, "MULT");
+	} | termo { callingProcedure = FALSE; } DIV fator {
+		checkTypes(&typesStack, mathematicalExpression);
+		geraCodigo(NULL, "DIVI");
+	} | termo { callingProcedure = FALSE; } AND fator {
+		checkTypes(&typesStack, comparison);
+		geraCodigo(NULL, "CONJ");
+	} | fator ;
 
 
 
-
-//lista_sinal_e_termo_ou_vazio: lista_sinal_e_termo | ;
-//lista_sinal_e_termo: lista_sinal_e_termo sinal_lista_sinal_e_termo termo {
-//		// desempilha a operacao
-//		char* operator = popFromStringStack(operatorsStack);
-//		char* instruction = getOperatorInstruction(operator);
-//		geraCodigo(NULL, instruction);
-//	} | sinal_lista_sinal_e_termo termo {
-//		// desempilha a operacao
-//		char* operator = popFromStringStack(operatorsStack);
-//		char* instruction = getOperatorInstruction(operator);
-//		geraCodigo(NULL, instruction);
-//	};
-//sinal_lista_sinal_e_termo: MAIS {
-//		// empilha a soma
-//		pushToStringStack(operatorsStack, token);
-//	} | MENOS | OR;
-//mais_ou_menos_ou_vazio: mais_ou_menos | ;
-//mais_ou_menos: MAIS | MENOS ;
-
-termo: fator lista_sinal_e_fator_ou_vazio;
-lista_sinal_e_fator_ou_vazio: lista_sinal_e_fator | ;
-lista_sinal_e_fator: lista_sinal_e_fator sinal_lista_sinal_fator fator | sinal_lista_sinal_fator fator ;
-sinal_lista_sinal_fator: VEZES | DIV | AND;
-
-fator: NOT fator | variavel {
+fator:  | ABRE_PARENTESES expressao FECHA_PARENTESES
+	| NOT fator {
+		checkTypes(&typesStack, comparison);
+		geraCodigo(NULL, "NEGA")
+	} | variavel {
 		symbolType* variable = searchIntoSymbolTable(compilerSymbolTable, token);
  		generateCodeWithArguments(
  			NULL,
@@ -229,7 +207,17 @@ fator: NOT fator | variavel {
 		);
 	} | NUMERO {
 		generateCodeWithArguments(NULL, "CRCT %s", token);
-	} | ABRE_PARENTESES expressao FECHA_PARENTESES ;
+		pushType(&typesStack, integerType);
+	} | TRUE_TOKEN {
+		geraCodigo(NULL, "CRCT 1");
+		pushType(&typesStack, booleanType);
+	} | FALSE_TOKEN {
+		geraCodigo(NULL, "CRCT 0");
+        	pushType(&typesStack, booleanType);
+	} identificador {
+		pushType(&typesStack, currentSymbol->type);
+		generateCRVLCode(currentSymbol);
+	};
 
 variavel: IDENT ;
 
@@ -239,7 +227,7 @@ sessao_parametros_ou_vazio: ABRE_PARENTESES lista_de_expressoes FECHA_PARENTESES
 
 repeticao: WHILE {
 		/* Generate the start label */
-		generateLabel(&labelsStack, &currentLabel, &numberOfLabels);
+		generateLabel(labelsStack, &currentLabel, &numberOfLabels);
 		geraCodigo(currentLabel, "NADA");
 	} expressao {
 		/* Generate the end label */

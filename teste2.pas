@@ -1,10 +1,10 @@
 program teste2(input, output);
     var m:  integer;
 begin
-    m := 2;
-    while (m <> 0) do
+    m := 1;
+    while m < 3 do
     begin
-        m := m - 1;
+        m := m + 1;
     end;
 end.
 

@@ -60,7 +60,9 @@ typedef enum simbolos {
   simb_maior_ou_igual,
   simb_or,
   simb_read,
-  simb_write
+  simb_write,
+  simb_false,
+  simb_true
 } simbolos;
 
 

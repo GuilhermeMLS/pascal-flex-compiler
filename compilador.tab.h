@@ -79,7 +79,9 @@
      MAIS = 295,
      VEZES = 296,
      READ = 297,
-     WRITE = 298
+     WRITE = 298,
+     FALSE_TOKEN = 299,
+     TRUE_TOKEN = 300
    };
 #endif
 /* Tokens.  */
@@ -124,6 +126,8 @@
 #define VEZES 296
 #define READ 297
 #define WRITE 298
+#define FALSE_TOKEN 299
+#define TRUE_TOKEN 300
 
 
 

@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include "genericStack.h"
 
+#define RED   "\x1B[31m"
+#define GRN   "\x1B[32m"
+#define RESET "\x1B[0m"
+
 int createGenericStack(genericStackType *stack) {
     if (stack == NULL) {
         return -1;
@@ -51,6 +55,7 @@ int pushType(genericStackType *stack, typeType type) {
     }
     *aux = type;
     pushToGenericStack(stack, aux);
+    printf(GRN "[Types Stack Message] \"%d\" pushed to Types Stack.\n" RESET, type);
     return 0;
 }
 
@@ -120,7 +125,7 @@ int checkTypes(genericStackType *stack, operationType operation) {
                 if (*leftNode == booleanType) {
                     pushType(stack, *leftNode);
                 } else {
-                    puts("\nSYNTAX ERROR: Parametro passado não é Boolena\n");
+                    puts("\nSyntax error: parameters passed isn't boolean\n");
                     exit(-1);
                 }
                 break;

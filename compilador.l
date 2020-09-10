@@ -54,7 +54,19 @@ end { simbolo = simb_end;
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME("end  ");
           return T_END;
- }
+}
+
+true { simbolo = simb_true;
+  	strncpy (token, yytext, TAM_TOKEN);
+  	IMPRIME(" true");
+  	return TRUE_TOKEN;
+}
+
+false { simbolo = simb_false;
+  	strncpy (token, yytext, TAM_TOKEN);
+  	IMPRIME(" false");
+  	return FALSE_TOKEN;
+}
 
 := { simbolo = simb_atribuicao;  
           strncpy (token, yytext, TAM_TOKEN);
