@@ -14,4 +14,6 @@ add_executable(ProjetoBaseGuilherme_copy
         stringStack/stringStack.h
         stringStack/stringStack.c
         genericStack/genericStack.h
-        genericStack/genericStack.c)
+        genericStack/genericStack.c
+        labelsStack/labelsStack.h
+        labelsStack/labelsStack.c)

@@ -12,6 +12,7 @@
 #include "symbolTable/symbolTable.h"
 #include "stringStack/stringStack.h"
 #include "genericStack/genericStack.h"
+#include "labelsStack/labelsStack.h"
 
 #define SYMBOL_TABLE_CAPACITY 500
 #define OPERATORS_STACK_CAPACITY 500
@@ -34,7 +35,7 @@ int currentLexicalLevel = 0;
 int offset = -1;
 symbolType* currentSymbol;
 stringStackType* operatorsStack;
-stringStackType* labelsStack;
+LabelsStackType* labelsStack;
 genericStackType typesStack;
 
 
@@ -68,7 +69,9 @@ programa: { geraCodigo(NULL, "INPP");}
 		printSymbolTable(compilerSymbolTable);
 	};
 
-bloco: parte_declara_vars { } comando_composto ;
+bloco: parte_declara_vars {
+	
+ 	} comando_composto ;
 
 parte_declara_vars:  var 
 ;
@@ -227,7 +230,7 @@ sessao_parametros_ou_vazio: ABRE_PARENTESES lista_de_expressoes FECHA_PARENTESES
 
 repeticao: WHILE {
 		/* Generate the start label */
-		generateLabel(labelsStack, &currentLabel, &numberOfLabels);
+		generateLabel(&labelsStack, &currentLabel, &numberOfLabels);
 		geraCodigo(currentLabel, "NADA");
 	} expressao {
 		/* Generate the end label */
@@ -239,8 +242,8 @@ repeticao: WHILE {
 		}
 		generateCodeWithArguments(NULL, "DSVF %s", currentLabel);
 	} DO comando {
-		auxLabel = popFromStringStack(&labelsStack);
-		currentLabel = popFromStringStack(&labelsStack);
+		auxLabel = popFromLabelsStack(&labelsStack);
+		currentLabel = popFromLabelsStack(&labelsStack);
 		generateCodeWithArguments(NULL, "DSVS %s", currentLabel);
 		geraCodigo(auxLabel, "NADA");
 	} ;
@@ -314,7 +317,7 @@ main (int argc, char** argv) {
  * ------------------------------------------------------------------- */
    compilerSymbolTable = createSymbolTable(SYMBOL_TABLE_CAPACITY);
    operatorsStack = createStringStack(OPERATORS_STACK_CAPACITY);
-   labelsStack = createStringStack(LABELS_STACK_CAPACITY);
+   createLabelsStack(&labelsStack);
    createGenericStack(&typesStack);
    yyin=fp;
    yyparse();

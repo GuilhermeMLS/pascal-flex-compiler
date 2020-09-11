@@ -177,6 +177,33 @@ genericStack/genericStack.c.s:
 	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/genericStack/genericStack.c.s
 .PHONY : genericStack/genericStack.c.s
 
+labelsStack/labelsStack.o: labelsStack/labelsStack.c.o
+
+.PHONY : labelsStack/labelsStack.o
+
+# target to build an object file
+labelsStack/labelsStack.c.o:
+	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/labelsStack/labelsStack.c.o
+.PHONY : labelsStack/labelsStack.c.o
+
+labelsStack/labelsStack.i: labelsStack/labelsStack.c.i
+
+.PHONY : labelsStack/labelsStack.i
+
+# target to preprocess a source file
+labelsStack/labelsStack.c.i:
+	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/labelsStack/labelsStack.c.i
+.PHONY : labelsStack/labelsStack.c.i
+
+labelsStack/labelsStack.s: labelsStack/labelsStack.c.s
+
+.PHONY : labelsStack/labelsStack.s
+
+# target to generate assembly for a file
+labelsStack/labelsStack.c.s:
+	$(MAKE) -f CMakeFiles/ProjetoBaseGuilherme_copy.dir/build.make CMakeFiles/ProjetoBaseGuilherme_copy.dir/labelsStack/labelsStack.c.s
+.PHONY : labelsStack/labelsStack.c.s
+
 stringStack/stringStack.o: stringStack/stringStack.c.o
 
 .PHONY : stringStack/stringStack.o
@@ -246,6 +273,9 @@ help:
 	@echo "... genericStack/genericStack.o"
 	@echo "... genericStack/genericStack.i"
 	@echo "... genericStack/genericStack.s"
+	@echo "... labelsStack/labelsStack.o"
+	@echo "... labelsStack/labelsStack.i"
+	@echo "... labelsStack/labelsStack.s"
 	@echo "... stringStack/stringStack.o"
 	@echo "... stringStack/stringStack.i"
 	@echo "... stringStack/stringStack.s"

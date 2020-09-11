@@ -39,7 +39,7 @@ char* popFromStringStack(stringStackType* stringStack) {
         return NULL;
     }
     char* string = &(stringStack->array[stringStack->top--]);
-    printf("\"%s\" popped from String Stack.\n", string);
+    printf(RED "\"%s\" popped from String Stack.\n", string);
     return string;
 }
 

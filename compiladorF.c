@@ -20,6 +20,7 @@
 #include "symbolTable/symbolTable.h"
 #include "stringStack/stringStack.h"
 #include "genericStack/genericStack.h"
+#include "labelsStack/labelsStack.h"
 
 #define LABEL_MAX_SIZE 10
 
@@ -135,11 +136,11 @@ void generateCRCTCode(char* constantToken) {
     geraCodigo(NULL, CRCTString);
 }
 
-int generateLabel(stringStackType* stack, char** label, int* numberOfLabels) {
+int generateLabel(LabelsStackType* stack, char** label, int* numberOfLabels) {
     *label = malloc(sizeof(char[LABEL_MAX_SIZE]));
     sprintf(*label, "R%02d", *numberOfLabels);
     *numberOfLabels = *numberOfLabels + 1;
-    pushToStringStack(stack, *label);
+    pushToLabelsStack(stack, *label);
 
     return 0;
 }

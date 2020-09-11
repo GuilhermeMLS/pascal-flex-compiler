@@ -3,6 +3,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/ProjetoBaseGuilherme_copy.dir/compiladorF.c.o"
   "CMakeFiles/ProjetoBaseGuilherme_copy.dir/stringStack/stringStack.c.o"
   "CMakeFiles/ProjetoBaseGuilherme_copy.dir/genericStack/genericStack.c.o"
+  "CMakeFiles/ProjetoBaseGuilherme_copy.dir/labelsStack/labelsStack.c.o"
   "ProjetoBaseGuilherme_copy.pdb"
   "ProjetoBaseGuilherme_copy"
 )

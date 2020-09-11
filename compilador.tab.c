@@ -170,6 +170,7 @@
 #include "symbolTable/symbolTable.h"
 #include "stringStack/stringStack.h"
 #include "genericStack/genericStack.h"
+#include "labelsStack/labelsStack.h"
 
 #define SYMBOL_TABLE_CAPACITY 500
 #define OPERATORS_STACK_CAPACITY 500
@@ -192,7 +193,7 @@ int currentLexicalLevel = 0;
 int offset = -1;
 symbolType* currentSymbol;
 stringStackType* operatorsStack;
-stringStackType* labelsStack;
+LabelsStackType* labelsStack;
 genericStackType typesStack;
 
 
@@ -233,7 +234,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 237 "compilador.tab.c"
+#line 238 "compilador.tab.c"
 
 #ifdef short
 # undef short
@@ -547,14 +548,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    57,    57,    57,    71,    71,    73,    77,    77,    78,
-      81,    82,    85,    86,    85,   101,   103,   114,   127,   128,
-     132,   132,   136,   155,   155,   158,   158,   161,   161,   164,
-     164,   167,   167,   170,   173,   173,   176,   176,   179,   179,
-     182,   186,   186,   191,   191,   196,   196,   201,   205,   205,
-     206,   209,   217,   220,   223,   223,   231,   237,   241,   237,
-     257,   259,   259,   261,   261,   263,   266,   267,   268,   269,
-     270,   271,   274,   278,   285,   289,   293,   296,   301
+       0,    58,    58,    58,    72,    72,    74,    78,    78,    79,
+      82,    83,    86,    87,    86,   102,   104,   115,   128,   129,
+     133,   133,   137,   153,   153,   156,   156,   159,   159,   162,
+     162,   165,   165,   168,   171,   171,   174,   174,   177,   177,
+     180,   184,   184,   187,   187,   190,   190,   193,   197,   197,
+     198,   201,   209,   212,   215,   215,   223,   229,   233,   229,
+     249,   251,   251,   253,   253,   255,   258,   259,   260,   261,
+     262,   263,   266,   270,   277,   281,   285,   288,   293
 };
 #endif
 
@@ -1549,12 +1550,12 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 57 "compilador.y"
+#line 58 "compilador.y"
     { geraCodigo(NULL, "INPP");;}
     break;
 
   case 3:
-#line 58 "compilador.y"
+#line 59 "compilador.y"
     {
 		// DMEM
 		int numberOfAllocatedVariables = compilerSymbolTable->top + 1;
@@ -1570,22 +1571,22 @@ yyreduce:
     break;
 
   case 4:
-#line 71 "compilador.y"
+#line 72 "compilador.y"
     { ;}
     break;
 
   case 7:
-#line 77 "compilador.y"
+#line 78 "compilador.y"
     { ;}
     break;
 
   case 12:
-#line 85 "compilador.y"
+#line 86 "compilador.y"
     { ;}
     break;
 
   case 13:
-#line 86 "compilador.y"
+#line 87 "compilador.y"
     {
 		/* AMEM */
 		int numberOfDigits = getNumberOfDigits(num_vars);
@@ -1603,7 +1604,7 @@ yyreduce:
     break;
 
   case 16:
-#line 103 "compilador.y"
+#line 104 "compilador.y"
     {
 		/* Insert the last variable of the list into the Symbol Table */
 		num_vars++;
@@ -1619,7 +1620,7 @@ yyreduce:
     break;
 
   case 17:
-#line 114 "compilador.y"
+#line 115 "compilador.y"
     {
             	/* insere vars na tabela de símbolos */
 		num_vars++;
@@ -1635,14 +1636,14 @@ yyreduce:
     break;
 
   case 20:
-#line 132 "compilador.y"
+#line 133 "compilador.y"
     {
 		currentSymbol = searchIntoSymbolTable(compilerSymbolTable, token);
 	;}
     break;
 
   case 22:
-#line 136 "compilador.y"
+#line 137 "compilador.y"
     {
 		int lexicalLevelNumberOfDigits = getNumberOfDigits(currentSymbol->lexicalAddress->lexicalLevel);
 		int offsetNumberOfDigits = getNumberOfDigits(currentSymbol->lexicalAddress->offset);
@@ -1657,12 +1658,12 @@ yyreduce:
     break;
 
   case 23:
-#line 155 "compilador.y"
+#line 153 "compilador.y"
     { callingProcedure = FALSE; ;}
     break;
 
   case 24:
-#line 155 "compilador.y"
+#line 153 "compilador.y"
     {
 		checkTypes(&typesStack, comparison);
 		geraCodigo(NULL, "CMMA");
@@ -1670,12 +1671,12 @@ yyreduce:
     break;
 
   case 25:
-#line 158 "compilador.y"
+#line 156 "compilador.y"
     { callingProcedure = FALSE; ;}
     break;
 
   case 26:
-#line 158 "compilador.y"
+#line 156 "compilador.y"
     {
 		checkTypes(&typesStack, comparison);
 		geraCodigo(NULL, "CMAG");
@@ -1683,12 +1684,12 @@ yyreduce:
     break;
 
   case 27:
-#line 161 "compilador.y"
+#line 159 "compilador.y"
     { callingProcedure = FALSE; ;}
     break;
 
   case 28:
-#line 161 "compilador.y"
+#line 159 "compilador.y"
     {
 		checkTypes(&typesStack, comparison);
 		geraCodigo(NULL, "CMME");
@@ -1696,12 +1697,12 @@ yyreduce:
     break;
 
   case 29:
-#line 164 "compilador.y"
+#line 162 "compilador.y"
     { callingProcedure = FALSE; ;}
     break;
 
   case 30:
-#line 164 "compilador.y"
+#line 162 "compilador.y"
     {
 		checkTypes(&typesStack, comparison);
 		geraCodigo(NULL, "CMEG");
@@ -1709,12 +1710,12 @@ yyreduce:
     break;
 
   case 31:
-#line 167 "compilador.y"
+#line 165 "compilador.y"
     { callingProcedure = FALSE; ;}
     break;
 
   case 32:
-#line 167 "compilador.y"
+#line 165 "compilador.y"
     {
 		checkTypes(&typesStack, comparison);
 		geraCodigo(NULL, "CMIG");
@@ -1722,12 +1723,12 @@ yyreduce:
     break;
 
   case 34:
-#line 173 "compilador.y"
+#line 171 "compilador.y"
     { callingProcedure = FALSE; ;}
     break;
 
   case 35:
-#line 173 "compilador.y"
+#line 171 "compilador.y"
     {
 			//checkTypes(&typesStack, mathematicalExpression);
 			geraCodigo(NULL, "SOMA");
@@ -1735,12 +1736,12 @@ yyreduce:
     break;
 
   case 36:
-#line 176 "compilador.y"
+#line 174 "compilador.y"
     { callingProcedure = FALSE; ;}
     break;
 
   case 37:
-#line 176 "compilador.y"
+#line 174 "compilador.y"
     {
 			checkTypes(&typesStack, mathematicalExpression);
 			geraCodigo(NULL, "SUBT");
@@ -1748,12 +1749,12 @@ yyreduce:
     break;
 
   case 38:
-#line 179 "compilador.y"
+#line 177 "compilador.y"
     { callingProcedure = FALSE; ;}
     break;
 
   case 39:
-#line 179 "compilador.y"
+#line 177 "compilador.y"
     {
 			checkTypes (&typesStack, comparison);
 			geraCodigo(NULL, "DISJ");
@@ -1761,14 +1762,12 @@ yyreduce:
     break;
 
   case 41:
-#line 186 "compilador.y"
-    {
-		callingProcedure = FALSE;
-	 ;}
+#line 184 "compilador.y"
+    { callingProcedure = FALSE; ;}
     break;
 
   case 42:
-#line 188 "compilador.y"
+#line 184 "compilador.y"
     {
 		checkTypes(&typesStack, mathematicalExpression);
 		geraCodigo(NULL, "MULT");
@@ -1776,14 +1775,12 @@ yyreduce:
     break;
 
   case 43:
-#line 191 "compilador.y"
-    {
-		callingProcedure = FALSE;
-	;}
+#line 187 "compilador.y"
+    { callingProcedure = FALSE; ;}
     break;
 
   case 44:
-#line 193 "compilador.y"
+#line 187 "compilador.y"
     {
 		checkTypes(&typesStack, mathematicalExpression);
 		geraCodigo(NULL, "DIVI");
@@ -1791,14 +1788,12 @@ yyreduce:
     break;
 
   case 45:
-#line 196 "compilador.y"
-    {
-		callingProcedure = FALSE;
-	 ;}
+#line 190 "compilador.y"
+    { callingProcedure = FALSE; ;}
     break;
 
   case 46:
-#line 198 "compilador.y"
+#line 190 "compilador.y"
     {
 		checkTypes(&typesStack, comparison);
 		geraCodigo(NULL, "CONJ");
@@ -1806,7 +1801,7 @@ yyreduce:
     break;
 
   case 50:
-#line 206 "compilador.y"
+#line 198 "compilador.y"
     {
 		checkTypes(&typesStack, comparison);
 		geraCodigo(NULL, "NEGA")
@@ -1814,7 +1809,7 @@ yyreduce:
     break;
 
   case 51:
-#line 209 "compilador.y"
+#line 201 "compilador.y"
     {
 		symbolType* variable = searchIntoSymbolTable(compilerSymbolTable, token);
  		generateCodeWithArguments(
@@ -1827,7 +1822,7 @@ yyreduce:
     break;
 
   case 52:
-#line 217 "compilador.y"
+#line 209 "compilador.y"
     {
 		generateCodeWithArguments(NULL, "CRCT %s", token);
 		pushType(&typesStack, integerType);
@@ -1835,7 +1830,7 @@ yyreduce:
     break;
 
   case 53:
-#line 220 "compilador.y"
+#line 212 "compilador.y"
     {
 		geraCodigo(NULL, "CRCT 1");
 		pushType(&typesStack, booleanType);
@@ -1843,7 +1838,7 @@ yyreduce:
     break;
 
   case 54:
-#line 223 "compilador.y"
+#line 215 "compilador.y"
     {
 		geraCodigo(NULL, "CRCT 0");
         	pushType(&typesStack, booleanType);
@@ -1851,7 +1846,7 @@ yyreduce:
     break;
 
   case 55:
-#line 226 "compilador.y"
+#line 218 "compilador.y"
     {
 		pushType(&typesStack, currentSymbol->type);
 		generateCRVLCode(currentSymbol);
@@ -1859,16 +1854,16 @@ yyreduce:
     break;
 
   case 57:
-#line 237 "compilador.y"
+#line 229 "compilador.y"
     {
 		/* Generate the start label */
-		generateLabel(labelsStack, &currentLabel, &numberOfLabels);
+		generateLabel(&labelsStack, &currentLabel, &numberOfLabels);
 		geraCodigo(currentLabel, "NADA");
 	;}
     break;
 
   case 58:
-#line 241 "compilador.y"
+#line 233 "compilador.y"
     {
 		/* Generate the end label */
 		generateLabel(&labelsStack, &currentLabel, &numberOfLabels);
@@ -1882,17 +1877,17 @@ yyreduce:
     break;
 
   case 59:
-#line 250 "compilador.y"
+#line 242 "compilador.y"
     {
-		auxLabel = popFromStringStack(&labelsStack);
-		currentLabel = popFromStringStack(&labelsStack);
+		auxLabel = popFromLabelsStack(&labelsStack);
+		currentLabel = popFromLabelsStack(&labelsStack);
 		generateCodeWithArguments(NULL, "DSVS %s", currentLabel);
 		geraCodigo(auxLabel, "NADA");
 	;}
     break;
 
   case 72:
-#line 274 "compilador.y"
+#line 266 "compilador.y"
     {
 		geraCodigo(NULL, "LEIT");
 		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
@@ -1901,7 +1896,7 @@ yyreduce:
     break;
 
   case 73:
-#line 278 "compilador.y"
+#line 270 "compilador.y"
     {
 		geraCodigo(NULL, "LEIT");
 		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
@@ -1910,7 +1905,7 @@ yyreduce:
     break;
 
   case 74:
-#line 285 "compilador.y"
+#line 277 "compilador.y"
     {
 		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
 		generateCRVLCode(symbol);
@@ -1919,7 +1914,7 @@ yyreduce:
     break;
 
   case 75:
-#line 289 "compilador.y"
+#line 281 "compilador.y"
     {
 		symbolType* symbol = searchIntoSymbolTable(compilerSymbolTable, token);
 		generateCRVLCode(symbol);
@@ -1928,7 +1923,7 @@ yyreduce:
     break;
 
   case 76:
-#line 293 "compilador.y"
+#line 285 "compilador.y"
     {
 		generateCRCTCode(token);
                 geraCodigo(NULL, "IMPR");
@@ -1936,7 +1931,7 @@ yyreduce:
     break;
 
   case 77:
-#line 296 "compilador.y"
+#line 288 "compilador.y"
     {
 		generateCRCTCode(token);
                 geraCodigo(NULL, "IMPR");
@@ -1945,7 +1940,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 1949 "compilador.tab.c"
+#line 1944 "compilador.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2159,7 +2154,7 @@ yyreturn:
 }
 
 
-#line 303 "compilador.y"
+#line 295 "compilador.y"
 
 
 main (int argc, char** argv) {
@@ -2183,7 +2178,7 @@ main (int argc, char** argv) {
  * ------------------------------------------------------------------- */
    compilerSymbolTable = createSymbolTable(SYMBOL_TABLE_CAPACITY);
    operatorsStack = createStringStack(OPERATORS_STACK_CAPACITY);
-   labelsStack = createStringStack(LABELS_STACK_CAPACITY);
+   createLabelsStack(&labelsStack);
    createGenericStack(&typesStack);
    yyin=fp;
    yyparse();
