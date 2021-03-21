@@ -64,3 +64,16 @@ R02: NADA
      DMEM 2
      PARA
 ```
+
+### Running the program
+
+```bash
+$ make clean
+$ make
+./compilador {simplified_pascal_file}
+```
+Notice: there are some Simplified Pascal files in the root directory:
+- testebool.pas;
+- type1.pas;
+- type2.pas;
+- type3.pas.
