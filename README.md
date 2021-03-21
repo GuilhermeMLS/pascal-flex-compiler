@@ -3,6 +3,8 @@
 A Simplified Pascal compiler that uses [Flex](https://github.com/westes/flex.git) and [Bison](https://www.gnu.org/software/bison/) to compile code to MEPA (abbreviation for Pascal Execution Machine in Portuguese), which is a 
 virtual machine to execute Simplified Pascal programs. Simplified Pascal is a subset of the Pascal programming language.
 
+This project was mas made by using a base-project made by professor [Bruno Muller](https://www.inf.ufpr.br/bmuller/) from UFPR. The base-project contains no logic and was made to help students to get started with Flex and Bison.
+
 ### Example:
 
 Pascal Code (input):
